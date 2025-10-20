@@ -70,7 +70,7 @@ class _AddNoteState extends ConsumerState<AddNote> {
                   border: OutlineInputBorder(),
                 ),
                 minLines: 2,
-                maxLines: 3,
+                maxLines: 5,
                 maxLength: 200,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
