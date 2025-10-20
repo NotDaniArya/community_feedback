@@ -37,26 +37,6 @@ class NoteRepositoryImpl implements NoteRepository {
   }
 
   @override
-  Future<Either<Failure, void>> updateNotePosition(
-    int id,
-    Offset newPosition,
-  ) async {
-    try {
-      await localDataSource.updateNotePosition(
-        id,
-        newPosition.dx,
-        newPosition.dy,
-      );
-
-      return const Right(null);
-    } catch (e) {
-      return const Left(
-        CacheFailure(message: 'Gagal memperbarui posisi catatan'),
-      );
-    }
-  }
-
-  @override
   Stream<Either<Failure, List<NoteEntity>>> watchAllNotes() {
     try {
       return localDataSource.watchAllNotes().map((notesFromDb) {
@@ -80,7 +60,6 @@ class NoteRepositoryImpl implements NoteRepository {
       username: data.username,
       userProfileImage: data.userProfileImage,
       color: Color(int.parse('0x${data.color}')),
-      position: Offset(data.positionX, data.positionY),
       createdAt: data.createdAt,
     );
   }
@@ -91,8 +70,6 @@ class NoteRepositoryImpl implements NoteRepository {
       username: Value(entity.username),
       userProfileImage: Value(entity.userProfileImage),
       color: Value(entity.color.value.toRadixString(16)),
-      positionX: Value(entity.position.dx),
-      positionY: Value(entity.position.dy),
       createdAt: Value(entity.createdAt),
     );
   }

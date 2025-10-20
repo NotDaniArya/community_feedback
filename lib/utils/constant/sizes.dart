@@ -7,5 +7,5 @@ class TSizes {
   static const double spaceBtwSections = 32.0;
 
   // paddings
-  static const double scaffoldPadding = 24;
+  static const double scaffoldPadding = 21.0;
 }

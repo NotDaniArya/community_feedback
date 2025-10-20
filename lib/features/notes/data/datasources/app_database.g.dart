@@ -63,28 +63,6 @@ class $NotesTable extends Notes with TableInfo<$NotesTable, Note> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _positionXMeta = const VerificationMeta(
-    'positionX',
-  );
-  @override
-  late final GeneratedColumn<double> positionX = GeneratedColumn<double>(
-    'position_x',
-    aliasedName,
-    false,
-    type: DriftSqlType.double,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _positionYMeta = const VerificationMeta(
-    'positionY',
-  );
-  @override
-  late final GeneratedColumn<double> positionY = GeneratedColumn<double>(
-    'position_y',
-    aliasedName,
-    false,
-    type: DriftSqlType.double,
-    requiredDuringInsert: true,
-  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -103,8 +81,6 @@ class $NotesTable extends Notes with TableInfo<$NotesTable, Note> {
     username,
     userProfileImage,
     color,
-    positionX,
-    positionY,
     createdAt,
   ];
   @override
@@ -157,22 +133,6 @@ class $NotesTable extends Notes with TableInfo<$NotesTable, Note> {
     } else if (isInserting) {
       context.missing(_colorMeta);
     }
-    if (data.containsKey('position_x')) {
-      context.handle(
-        _positionXMeta,
-        positionX.isAcceptableOrUnknown(data['position_x']!, _positionXMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_positionXMeta);
-    }
-    if (data.containsKey('position_y')) {
-      context.handle(
-        _positionYMeta,
-        positionY.isAcceptableOrUnknown(data['position_y']!, _positionYMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_positionYMeta);
-    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -210,14 +170,6 @@ class $NotesTable extends Notes with TableInfo<$NotesTable, Note> {
         DriftSqlType.string,
         data['${effectivePrefix}color'],
       )!,
-      positionX: attachedDatabase.typeMapping.read(
-        DriftSqlType.double,
-        data['${effectivePrefix}position_x'],
-      )!,
-      positionY: attachedDatabase.typeMapping.read(
-        DriftSqlType.double,
-        data['${effectivePrefix}position_y'],
-      )!,
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -237,8 +189,6 @@ class Note extends DataClass implements Insertable<Note> {
   final String username;
   final String userProfileImage;
   final String color;
-  final double positionX;
-  final double positionY;
   final DateTime createdAt;
   const Note({
     required this.id,
@@ -246,8 +196,6 @@ class Note extends DataClass implements Insertable<Note> {
     required this.username,
     required this.userProfileImage,
     required this.color,
-    required this.positionX,
-    required this.positionY,
     required this.createdAt,
   });
   @override
@@ -258,8 +206,6 @@ class Note extends DataClass implements Insertable<Note> {
     map['username'] = Variable<String>(username);
     map['user_profile_image'] = Variable<String>(userProfileImage);
     map['color'] = Variable<String>(color);
-    map['position_x'] = Variable<double>(positionX);
-    map['position_y'] = Variable<double>(positionY);
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
@@ -271,8 +217,6 @@ class Note extends DataClass implements Insertable<Note> {
       username: Value(username),
       userProfileImage: Value(userProfileImage),
       color: Value(color),
-      positionX: Value(positionX),
-      positionY: Value(positionY),
       createdAt: Value(createdAt),
     );
   }
@@ -288,8 +232,6 @@ class Note extends DataClass implements Insertable<Note> {
       username: serializer.fromJson<String>(json['username']),
       userProfileImage: serializer.fromJson<String>(json['userProfileImage']),
       color: serializer.fromJson<String>(json['color']),
-      positionX: serializer.fromJson<double>(json['positionX']),
-      positionY: serializer.fromJson<double>(json['positionY']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
@@ -302,8 +244,6 @@ class Note extends DataClass implements Insertable<Note> {
       'username': serializer.toJson<String>(username),
       'userProfileImage': serializer.toJson<String>(userProfileImage),
       'color': serializer.toJson<String>(color),
-      'positionX': serializer.toJson<double>(positionX),
-      'positionY': serializer.toJson<double>(positionY),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
@@ -314,8 +254,6 @@ class Note extends DataClass implements Insertable<Note> {
     String? username,
     String? userProfileImage,
     String? color,
-    double? positionX,
-    double? positionY,
     DateTime? createdAt,
   }) => Note(
     id: id ?? this.id,
@@ -323,8 +261,6 @@ class Note extends DataClass implements Insertable<Note> {
     username: username ?? this.username,
     userProfileImage: userProfileImage ?? this.userProfileImage,
     color: color ?? this.color,
-    positionX: positionX ?? this.positionX,
-    positionY: positionY ?? this.positionY,
     createdAt: createdAt ?? this.createdAt,
   );
   Note copyWithCompanion(NotesCompanion data) {
@@ -336,8 +272,6 @@ class Note extends DataClass implements Insertable<Note> {
           ? data.userProfileImage.value
           : this.userProfileImage,
       color: data.color.present ? data.color.value : this.color,
-      positionX: data.positionX.present ? data.positionX.value : this.positionX,
-      positionY: data.positionY.present ? data.positionY.value : this.positionY,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
@@ -350,24 +284,14 @@ class Note extends DataClass implements Insertable<Note> {
           ..write('username: $username, ')
           ..write('userProfileImage: $userProfileImage, ')
           ..write('color: $color, ')
-          ..write('positionX: $positionX, ')
-          ..write('positionY: $positionY, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
-    id,
-    content,
-    username,
-    userProfileImage,
-    color,
-    positionX,
-    positionY,
-    createdAt,
-  );
+  int get hashCode =>
+      Object.hash(id, content, username, userProfileImage, color, createdAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -377,8 +301,6 @@ class Note extends DataClass implements Insertable<Note> {
           other.username == this.username &&
           other.userProfileImage == this.userProfileImage &&
           other.color == this.color &&
-          other.positionX == this.positionX &&
-          other.positionY == this.positionY &&
           other.createdAt == this.createdAt);
 }
 
@@ -388,8 +310,6 @@ class NotesCompanion extends UpdateCompanion<Note> {
   final Value<String> username;
   final Value<String> userProfileImage;
   final Value<String> color;
-  final Value<double> positionX;
-  final Value<double> positionY;
   final Value<DateTime> createdAt;
   const NotesCompanion({
     this.id = const Value.absent(),
@@ -397,8 +317,6 @@ class NotesCompanion extends UpdateCompanion<Note> {
     this.username = const Value.absent(),
     this.userProfileImage = const Value.absent(),
     this.color = const Value.absent(),
-    this.positionX = const Value.absent(),
-    this.positionY = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
   NotesCompanion.insert({
@@ -407,15 +325,11 @@ class NotesCompanion extends UpdateCompanion<Note> {
     required String username,
     required String userProfileImage,
     required String color,
-    required double positionX,
-    required double positionY,
     required DateTime createdAt,
   }) : content = Value(content),
        username = Value(username),
        userProfileImage = Value(userProfileImage),
        color = Value(color),
-       positionX = Value(positionX),
-       positionY = Value(positionY),
        createdAt = Value(createdAt);
   static Insertable<Note> custom({
     Expression<int>? id,
@@ -423,8 +337,6 @@ class NotesCompanion extends UpdateCompanion<Note> {
     Expression<String>? username,
     Expression<String>? userProfileImage,
     Expression<String>? color,
-    Expression<double>? positionX,
-    Expression<double>? positionY,
     Expression<DateTime>? createdAt,
   }) {
     return RawValuesInsertable({
@@ -433,8 +345,6 @@ class NotesCompanion extends UpdateCompanion<Note> {
       if (username != null) 'username': username,
       if (userProfileImage != null) 'user_profile_image': userProfileImage,
       if (color != null) 'color': color,
-      if (positionX != null) 'position_x': positionX,
-      if (positionY != null) 'position_y': positionY,
       if (createdAt != null) 'created_at': createdAt,
     });
   }
@@ -445,8 +355,6 @@ class NotesCompanion extends UpdateCompanion<Note> {
     Value<String>? username,
     Value<String>? userProfileImage,
     Value<String>? color,
-    Value<double>? positionX,
-    Value<double>? positionY,
     Value<DateTime>? createdAt,
   }) {
     return NotesCompanion(
@@ -455,8 +363,6 @@ class NotesCompanion extends UpdateCompanion<Note> {
       username: username ?? this.username,
       userProfileImage: userProfileImage ?? this.userProfileImage,
       color: color ?? this.color,
-      positionX: positionX ?? this.positionX,
-      positionY: positionY ?? this.positionY,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -479,12 +385,6 @@ class NotesCompanion extends UpdateCompanion<Note> {
     if (color.present) {
       map['color'] = Variable<String>(color.value);
     }
-    if (positionX.present) {
-      map['position_x'] = Variable<double>(positionX.value);
-    }
-    if (positionY.present) {
-      map['position_y'] = Variable<double>(positionY.value);
-    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -499,8 +399,6 @@ class NotesCompanion extends UpdateCompanion<Note> {
           ..write('username: $username, ')
           ..write('userProfileImage: $userProfileImage, ')
           ..write('color: $color, ')
-          ..write('positionX: $positionX, ')
-          ..write('positionY: $positionY, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
@@ -525,8 +423,6 @@ typedef $$NotesTableCreateCompanionBuilder =
       required String username,
       required String userProfileImage,
       required String color,
-      required double positionX,
-      required double positionY,
       required DateTime createdAt,
     });
 typedef $$NotesTableUpdateCompanionBuilder =
@@ -536,8 +432,6 @@ typedef $$NotesTableUpdateCompanionBuilder =
       Value<String> username,
       Value<String> userProfileImage,
       Value<String> color,
-      Value<double> positionX,
-      Value<double> positionY,
       Value<DateTime> createdAt,
     });
 
@@ -571,16 +465,6 @@ class $$NotesTableFilterComposer extends Composer<_$AppDatabase, $NotesTable> {
 
   ColumnFilters<String> get color => $composableBuilder(
     column: $table.color,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<double> get positionX => $composableBuilder(
-    column: $table.positionX,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<double> get positionY => $composableBuilder(
-    column: $table.positionY,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -624,16 +508,6 @@ class $$NotesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<double> get positionX => $composableBuilder(
-    column: $table.positionX,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<double> get positionY => $composableBuilder(
-    column: $table.positionY,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -665,12 +539,6 @@ class $$NotesTableAnnotationComposer
 
   GeneratedColumn<String> get color =>
       $composableBuilder(column: $table.color, builder: (column) => column);
-
-  GeneratedColumn<double> get positionX =>
-      $composableBuilder(column: $table.positionX, builder: (column) => column);
-
-  GeneratedColumn<double> get positionY =>
-      $composableBuilder(column: $table.positionY, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -709,8 +577,6 @@ class $$NotesTableTableManager
                 Value<String> username = const Value.absent(),
                 Value<String> userProfileImage = const Value.absent(),
                 Value<String> color = const Value.absent(),
-                Value<double> positionX = const Value.absent(),
-                Value<double> positionY = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
               }) => NotesCompanion(
                 id: id,
@@ -718,8 +584,6 @@ class $$NotesTableTableManager
                 username: username,
                 userProfileImage: userProfileImage,
                 color: color,
-                positionX: positionX,
-                positionY: positionY,
                 createdAt: createdAt,
               ),
           createCompanionCallback:
@@ -729,8 +593,6 @@ class $$NotesTableTableManager
                 required String username,
                 required String userProfileImage,
                 required String color,
-                required double positionX,
-                required double positionY,
                 required DateTime createdAt,
               }) => NotesCompanion.insert(
                 id: id,
@@ -738,8 +600,6 @@ class $$NotesTableTableManager
                 username: username,
                 userProfileImage: userProfileImage,
                 color: color,
-                positionX: positionX,
-                positionY: positionY,
                 createdAt: createdAt,
               ),
           withReferenceMapper: (p0) => p0

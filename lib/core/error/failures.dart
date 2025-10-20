@@ -4,7 +4,6 @@ abstract class Failure extends Equatable {
   const Failure([List properties = const <dynamic>[]]);
 }
 
-/// Kegagalan umum untuk operasi database lokal
 class CacheFailure extends Failure {
   final String message;
 

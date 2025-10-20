@@ -18,10 +18,6 @@ class Notes extends Table {
 
   TextColumn get color => text()();
 
-  RealColumn get positionX => real()();
-
-  RealColumn get positionY => real()();
-
   DateTimeColumn get createdAt => dateTime()();
 }
 

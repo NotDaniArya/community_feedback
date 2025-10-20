@@ -7,7 +7,6 @@ class NoteEntity extends Equatable {
   final String username;
   final String userProfileImage;
   final Color color;
-  final Offset position;
   final DateTime createdAt;
 
   const NoteEntity({
@@ -16,7 +15,6 @@ class NoteEntity extends Equatable {
     required this.username,
     required this.userProfileImage,
     required this.color,
-    required this.position,
     required this.createdAt,
   });
 
@@ -28,7 +26,6 @@ class NoteEntity extends Equatable {
     username,
     userProfileImage,
     color,
-    position,
     createdAt,
   ];
 }

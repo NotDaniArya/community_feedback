@@ -1,14 +1,10 @@
-import 'package:community_feedback/features/notes/data/datasources/note_local_datasource.dart';
-import 'package:community_feedback/features/notes/data/repositories/note_repository_impl.dart';
-import 'package:community_feedback/features/notes/domain/repositories/note_repository.dart';
-import 'package:community_feedback/features/notes/presentation/cubit/notes_cubit.dart';
+import 'dart:math';
+
+import 'package:community_feedback/navigation_menu.dart';
 import 'package:community_feedback/utils/constant/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import 'features/notes/data/datasources/app_database.dart';
-import 'features/notes/presentation/screens/canvas_screen.dart';
 
 final theme = ThemeData().copyWith(
   colorScheme: ColorScheme.fromSeed(
@@ -18,8 +14,12 @@ final theme = ThemeData().copyWith(
   textTheme: GoogleFonts.poppinsTextTheme(),
 );
 
-void main() {
-  runApp(const MyApp());
+final random = Random();
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -27,31 +27,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider<AppDatabase>(create: (context) => AppDatabase()),
-        RepositoryProvider<NoteLocalDataSource>(
-          create: (context) =>
-              NoteLocalDataSourceImpl(database: context.read<AppDatabase>()),
-        ),
-        RepositoryProvider<NoteRepository>(
-          create: (context) => NoteRepositoryImpl(
-            localDataSource: context.read<NoteLocalDataSource>(),
-          ),
-        ),
-      ],
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider<NotesCubit>(
-            create: (context) => NotesCubit(context.read<NoteRepository>()),
-          ),
-        ],
-        child: MaterialApp(
-          title: 'Community Feedback',
-          theme: theme,
-          home: const CanvasScreen(),
-        ),
-      ),
+    return MaterialApp(
+      title: 'Community Feedback',
+      theme: theme,
+      home: const NavigationMenu(),
     );
   }
 }

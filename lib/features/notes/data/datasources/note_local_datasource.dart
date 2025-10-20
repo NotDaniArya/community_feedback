@@ -1,5 +1,4 @@
 import 'package:community_feedback/features/notes/data/datasources/app_database.dart';
-import 'package:drift/drift.dart';
 
 abstract class NoteLocalDataSource {
   Stream<List<Note>> watchAllNotes();
@@ -7,8 +6,6 @@ abstract class NoteLocalDataSource {
   Future<void> addNote(NotesCompanion note);
 
   Future<void> deleteNote(int id);
-
-  Future<void> updateNotePosition(int id, double dx, double dy);
 }
 
 class NoteLocalDataSourceImpl implements NoteLocalDataSource {
@@ -26,12 +23,6 @@ class NoteLocalDataSourceImpl implements NoteLocalDataSource {
     return (database.delete(
       database.notes,
     )..where((tbl) => tbl.id.equals(id))).go();
-  }
-
-  @override
-  Future<void> updateNotePosition(int id, double dx, double dy) {
-    return (database.update(database.notes)..where((tbl) => tbl.id.equals(id)))
-        .write(NotesCompanion(positionX: Value(dx), positionY: Value(dy)));
   }
 
   @override
