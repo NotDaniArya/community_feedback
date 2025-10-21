@@ -17,8 +17,8 @@ class _CanvasScreenState extends State<CanvasScreen> {
   final TransformationController _transformationController =
       TransformationController();
 
-  static const double _canvasWidth = 10000.0;
-  static const double _canvasHeight = 10000.0;
+  static const double _canvasWidth = 1000.0;
+  static const double _canvasHeight = 1000.0;
 
   bool _isDraggingNote = false;
 
@@ -52,9 +52,14 @@ class _CanvasScreenState extends State<CanvasScreen> {
               transformationController: _transformationController,
               panEnabled: !_isDraggingNote,
               scaleEnabled: !_isDraggingNote,
-              boundaryMargin: const EdgeInsets.all(1000),
+              boundaryMargin: const EdgeInsets.only(
+                right: 1000,
+                bottom: 1000,
+                left: 100,
+                top: 100,
+              ),
               minScale: 0.5,
-              maxScale: 2.0,
+              maxScale: 5,
               clipBehavior: Clip.none,
               child: SizedBox(
                 width: _canvasWidth,
@@ -178,8 +183,8 @@ class _DraggableStickyNoteState extends State<DraggableStickyNote> {
             _currentPosition = _startDragPosition + _cumulativeDelta;
 
             _currentPosition = Offset(
-              _currentPosition.dx.clamp(-1000, 10000),
-              _currentPosition.dy.clamp(-1000, 10000),
+              _currentPosition.dx.clamp(0, 1000),
+              _currentPosition.dy.clamp(0, 1000),
             );
           });
         },

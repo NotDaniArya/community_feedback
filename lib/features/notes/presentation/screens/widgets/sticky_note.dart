@@ -1,5 +1,8 @@
 import 'package:community_feedback/features/notes/domain/entities/note_entity.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../cubit/notes_cubit.dart';
 
 class StickyNote extends StatelessWidget {
   final NoteEntity note;
@@ -43,10 +46,15 @@ class StickyNote extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                // IconButton(
-                //   icon: const Icon(Icons.delete, size: 18, color: Colors.black54),
-                //   onPressed: () => context.read<NotesCubit>().deleteNote(note.id),
-                // )
+                IconButton(
+                  icon: const Icon(
+                    Icons.delete,
+                    size: 18,
+                    color: Colors.black54,
+                  ),
+                  onPressed: () =>
+                      context.read<NotesCubit>().deleteNote(note.id),
+                ),
               ],
             ),
             const Divider(),

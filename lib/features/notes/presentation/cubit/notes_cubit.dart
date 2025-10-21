@@ -57,6 +57,8 @@ class NotesCubit extends Cubit<NotesState> {
 
   Future<void> updateNotePosition(int id, Offset newPosition) async {
     await _repository.updateNotePosition(id, newPosition);
+    print(newPosition.dx);
+    print(newPosition.dy);
   }
 
   Future<void> deleteNote(int id) async {
