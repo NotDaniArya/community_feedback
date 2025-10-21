@@ -39,14 +39,18 @@ class NotesCubit extends Cubit<NotesState> {
     }
   }
 
-  Future<void> addNote({Offset? initialPosition}) async {
+  Future<void> addNote({
+    Offset? initialPosition,
+    required String noteContent,
+    required Color color,
+  }) async {
     final random = Random();
     final newNote = NoteEntity(
       id: 0,
-      content: 'Catatan baru...',
-      username: 'Pengguna',
+      content: noteContent,
+      username: 'User Testing',
       userProfileImage: 'https://i.pravatar.cc/150',
-      color: Colors.primaries[random.nextInt(Colors.primaries.length)],
+      color: color,
       position:
           initialPosition ??
           Offset(random.nextDouble() * 200, random.nextDouble() * 400),

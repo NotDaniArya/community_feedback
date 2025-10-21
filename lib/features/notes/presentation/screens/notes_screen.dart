@@ -1,19 +1,20 @@
 import 'package:community_feedback/features/notes/presentation/cubit/notes_cubit.dart';
 import 'package:community_feedback/features/notes/presentation/cubit/notes_state.dart';
 import 'package:community_feedback/features/notes/presentation/screens/widgets/sticky_note.dart';
+import 'package:community_feedback/utils/constant/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/entities/note_entity.dart';
 
-class CanvasScreen extends StatefulWidget {
-  const CanvasScreen({super.key});
+class NotesScreen extends StatefulWidget {
+  const NotesScreen({super.key});
 
   @override
-  State<CanvasScreen> createState() => _CanvasScreenState();
+  State<NotesScreen> createState() => _NotesScreenState();
 }
 
-class _CanvasScreenState extends State<CanvasScreen> {
+class _NotesScreenState extends State<NotesScreen> {
   final TransformationController _transformationController =
       TransformationController();
 
@@ -37,11 +38,7 @@ class _CanvasScreenState extends State<CanvasScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sticky Notes Canvas'),
-        backgroundColor: Colors.grey[900],
-        foregroundColor: Colors.white,
-      ),
+      backgroundColor: TColors.backgroundColor,
       body: BlocBuilder<NotesCubit, NotesState>(
         builder: (context, state) {
           if (state is NotesLoading) {
@@ -95,24 +92,6 @@ class _CanvasScreenState extends State<CanvasScreen> {
             child: Text('Ketuk tombol + untuk menambah catatan!'),
           );
         },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          final viewportMatrix = _transformationController.value;
-          final screenCenter = Offset(
-            MediaQuery.of(context).size.width / 2,
-            MediaQuery.of(context).size.height / 2,
-          );
-          final canvasCenter = MatrixUtils.transformPoint(
-            Matrix4.inverted(viewportMatrix),
-            screenCenter,
-          );
-
-          context.read<NotesCubit>().addNote(initialPosition: canvasCenter);
-        },
-        backgroundColor: Colors.grey[800],
-        foregroundColor: Colors.white,
-        child: const Icon(Icons.add),
       ),
     );
   }
