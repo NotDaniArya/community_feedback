@@ -1,4 +1,5 @@
 import 'package:community_feedback/features/notes/domain/entities/note_entity.dart';
+import 'package:community_feedback/features/notes/presentation/screens/widgets/reaction_chip.dart';
 import 'package:community_feedback/utils/shared_widgets/avatar_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,7 +20,7 @@ class StickyNote extends StatelessWidget {
     final randomRotate = (random.nextDouble() * 0.08) - 0.04;
 
     return Container(
-      width: 200,
+      width: 260,
       margin: const EdgeInsets.all(TSizes.smallSpace),
       child: Stack(
         clipBehavior: Clip.none,
@@ -66,6 +67,16 @@ class StickyNote extends StatelessWidget {
                     style: textTheme.bodyMedium!.copyWith(
                       fontWeight: FontWeight.w500,
                     ),
+                  ),
+                  const SizedBox(height: TSizes.spaceBtwSections),
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ReactionChip(emoji: '❤️'),
+                      ReactionChip(emoji: '👍'),
+                      ReactionChip(emoji: '😮'),
+                      ReactionChip(emoji: '🔥'),
+                    ],
                   ),
                   Align(
                     alignment: Alignment.bottomRight,
