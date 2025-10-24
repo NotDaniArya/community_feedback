@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:community_feedback/features/notes/presentation/screens/widgets/notes_image_picker.dart';
 import 'package:community_feedback/utils/constant/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,6 +20,7 @@ class _AddNoteState extends State<AddNote> {
   final _formKey = GlobalKey<FormState>();
   final _noteContentController = TextEditingController();
   late Color _selectedColor;
+  File? _selectedImage;
 
   @override
   void initState() {
@@ -87,6 +91,14 @@ class _AddNoteState extends State<AddNote> {
                     return 'Note tidak boleh kosong.';
                   }
                   return null;
+                },
+              ),
+              const SizedBox(height: TSizes.spaceBtwItems),
+              NotesImagePicker(
+                onImageSelected: (image) {
+                  setState(() {
+                    _selectedImage = image;
+                  });
                 },
               ),
               const SizedBox(height: TSizes.spaceBtwItems),
