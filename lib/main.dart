@@ -17,7 +17,7 @@ final theme = ThemeData().copyWith(
     seedColor: TColors.primaryColor,
     brightness: Brightness.light,
   ),
-  textTheme: GoogleFonts.poppinsTextTheme(),
+  textTheme: GoogleFonts.plusJakartaSansTextTheme(),
 );
 
 final random = Random();
