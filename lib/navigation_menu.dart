@@ -1,6 +1,7 @@
 import 'package:community_feedback/features/auth/presentation/screens/login/login_screen.dart';
 import 'package:community_feedback/features/notes/presentation/screens/notes_screen.dart';
 import 'package:community_feedback/utils/constant/colors.dart';
+import 'package:community_feedback/utils/constant/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -13,8 +14,11 @@ class NavigationMenu extends StatefulWidget {
   State<NavigationMenu> createState() => _NavigationMenuState();
 }
 
-class _NavigationMenuState extends State<NavigationMenu> {
+class _NavigationMenuState extends State<NavigationMenu>
+    with SingleTickerProviderStateMixin {
   int _selectedIndex = 0;
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
 
   static final List<Widget> _listMenu = [
     const NotesScreen(),
@@ -22,10 +26,36 @@ class _NavigationMenuState extends State<NavigationMenu> {
     Container(),
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeInOut,
+      ),
+    );
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
   void _selectedScreen(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    if (_selectedIndex != index) {
+      setState(() {
+        _selectedIndex = index;
+        _animationController.reset();
+        _animationController.forward();
+      });
+    }
   }
 
   @override
@@ -35,112 +65,143 @@ class _NavigationMenuState extends State<NavigationMenu> {
     return Scaffold(
       backgroundColor: TColors.backgroundColor,
       extendBody: true,
-      body: _listMenu[_selectedIndex],
-
-      bottomNavigationBar: SafeArea(
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.18),
-                blurRadius: 20,
-                spreadRadius: 5,
-                offset: const Offset(0, -3),
-              ),
-            ],
+      body: FadeTransition(
+        opacity: _fadeAnimation,
+        child: _listMenu[_selectedIndex],
+      ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 20,
+              spreadRadius: 0,
+              offset: const Offset(0, -5),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.vertical(
+            top: Radius.circular(28),
           ),
-          child: BottomAppBar(
-            color: Colors.white,
-
-            clipBehavior: Clip.antiAlias,
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                _buildNavItem(
-                  icon: FontAwesomeIcons.home,
-                  label: 'Home',
-                  index: 0,
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(28),
+              ),
+            ),
+            child: SafeArea(
+              top: false,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: TSizes.mediumSpace,
+                  vertical: 8,
                 ),
-                _buildNavItem(
-                  icon: FontAwesomeIcons.stickyNote,
-                  label: 'My Notes',
-                  index: 1,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    _buildNavItem(
+                      icon: 'assets/icons/canvas.png',
+                      index: 0,
+                    ),
+                    _buildNavItem(
+                      icon: 'assets/icons/toplikes_icon.png',
+                      index: 1,
+                    ),
+                    _buildNavItem(
+                      icon: 'assets/icons/settings_icon.png',
+                      index: 2,
+                    ),
+                  ],
                 ),
-
-                _buildNavItem(
-                  icon: FontAwesomeIcons.gear,
-                  label: 'Settings',
-                  index: 2,
-                ),
-              ],
+              ),
             ),
           ),
         ),
       ),
       floatingActionButton: _selectedIndex == 0
-          ? FloatingActionButton.extended(
-              onPressed: () {
-                showModalBottomSheet(
-                  backgroundColor: TColors.backgroundColor,
-                  context: context,
-                  isScrollControlled: true,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(20),
+          ? TweenAnimationBuilder<double>(
+              tween: Tween<double>(begin: 0.0, end: 1.0),
+              duration: const Duration(milliseconds: 400),
+              curve: Curves.elasticOut,
+              builder: (context, value, child) {
+                return Transform.scale(
+                  scale: value,
+                  child: FloatingActionButton.extended(
+                    onPressed: () {
+                      showModalBottomSheet(
+                        backgroundColor: TColors.backgroundColor,
+                        context: context,
+                        isScrollControlled: true,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(28),
+                          ),
+                        ),
+                        builder: (context) => const AddNote(),
+                      );
+                    },
+                    elevation: 8,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    backgroundColor: TColors.primaryColor,
+                    label: Text(
+                      'New Note',
+                      style: textTheme.labelLarge!.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                    icon: const FaIcon(
+                      FontAwesomeIcons.pen,
+                      color: Colors.white,
+                      size: 18,
                     ),
                   ),
-                  builder: (context) => const AddNote(),
                 );
               },
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              backgroundColor: TColors.primaryColor,
-              label: Text(
-                'New Note',
-                style: textTheme.labelLarge!.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              icon: const FaIcon(
-                FontAwesomeIcons.pen,
-                color: Colors.white,
-                size: 20,
-              ),
             )
           : null,
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 
   Widget _buildNavItem({
-    required IconData icon,
-    required String label,
+    required String icon,
     required int index,
   }) {
     final isSelected = _selectedIndex == index;
-    final color = isSelected ? TColors.primaryColor : Colors.grey;
+    final color = isSelected ? Colors.white : TColors.primaryColor;
 
-    return InkWell(
-      onTap: () => _selectedScreen(index),
-      borderRadius: BorderRadius.circular(20),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, color: color, size: 20),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
-                color: color,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-              ),
-            ),
-          ],
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => _selectedScreen(index),
+        behavior: HitTestBehavior.opaque,
+          child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeInOut,
+          margin: EdgeInsets.symmetric(
+            horizontal: isSelected ? 4 : 2,
+          ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 10,
+            vertical: 10,
+          ),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? TColors.primaryColor
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Image.asset(
+            icon,
+            color: color,
+            width: 30,
+            height: 30,
+          ),
         ),
       ),
     );
