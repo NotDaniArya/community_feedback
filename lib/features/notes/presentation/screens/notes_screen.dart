@@ -18,8 +18,8 @@ class _NotesScreenState extends State<NotesScreen> {
   final TransformationController _transformationController =
       TransformationController();
 
-  static const double _canvasWidth = 1000.0;
-  static const double _canvasHeight = 1000.0;
+  static const double _canvasWidth = 3000.0;
+  static const double _canvasHeight = 3000.0;
 
   bool _isDraggingNote = false;
 
@@ -35,64 +35,186 @@ class _NotesScreenState extends State<NotesScreen> {
     });
   }
 
+  void _zoomIn() {
+    const double maxScale = 2.0;
+    const double scaleFactor = 1.2;
+    
+    // Get current scale from transformation matrix
+    final currentScale = _transformationController.value.getMaxScaleOnAxis();
+    
+    // Calculate new scale after zoom in
+    final newScale = currentScale * scaleFactor;
+    
+    // Check if new scale exceeds maximum
+    if (newScale > maxScale) {
+      // If already at or above max, don't zoom further
+      if (currentScale >= maxScale) {
+        return;
+      }
+      // Limit to max scale
+      final limitedScaleFactor = maxScale / currentScale;
+      _applyZoom(limitedScaleFactor);
+    } else {
+      _applyZoom(scaleFactor);
+    }
+  }
+
+  void _zoomOut() {
+    const double minScale = 0.8;
+    const double scaleFactor = 0.8;
+    
+    // Get current scale from transformation matrix
+    final currentScale = _transformationController.value.getMaxScaleOnAxis();
+    
+    // Calculate new scale after zoom out
+    final newScale = currentScale * scaleFactor;
+    
+    // Check if new scale goes below minimum
+    if (newScale < minScale) {
+      // If already at or below min, don't zoom further
+      if (currentScale <= minScale) {
+        return;
+      }
+      // Limit to min scale
+      final limitedScaleFactor = minScale / currentScale;
+      _applyZoom(limitedScaleFactor);
+    } else {
+      _applyZoom(scaleFactor);
+    }
+  }
+
+  /// Helper method to apply zoom transformation
+  void _applyZoom(double scaleFactor) {
+    final screenCenter = Offset(
+      MediaQuery.of(context).size.width / 2,
+      MediaQuery.of(context).size.height / 2,
+    );
+
+    final canvasFocus = MatrixUtils.transformPoint(
+      Matrix4.inverted(_transformationController.value),
+      screenCenter,
+    );
+    
+    final newMatrix = _transformationController.value.clone()
+      ..translate(canvasFocus.dx, canvasFocus.dy)
+      ..scale(scaleFactor)
+      ..translate(-canvasFocus.dx, -canvasFocus.dy);
+
+    _transformationController.value = newMatrix;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: TColors.backgroundColor,
-      body: BlocBuilder<NotesCubit, NotesState>(
-        builder: (context, state) {
-          if (state is NotesLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (state is NotesLoaded) {
-            return InteractiveViewer(
-              transformationController: _transformationController,
-              panEnabled: !_isDraggingNote,
-              scaleEnabled: !_isDraggingNote,
-              boundaryMargin: const EdgeInsets.only(
-                right: 1000,
-                bottom: 1000,
-                left: 100,
-                top: 100,
-              ),
-              minScale: 0.5,
-              maxScale: 5,
-              clipBehavior: Clip.none,
-              child: SizedBox(
-                width: _canvasWidth,
-                height: _canvasHeight,
-                child: Stack(
+      body: Stack(
+        children: [
+          BlocBuilder<NotesCubit, NotesState>(
+            builder: (context, state) {
+              if (state is NotesLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (state is NotesLoaded) {
+                return InteractiveViewer(
+                  transformationController: _transformationController,
+                  panEnabled: !_isDraggingNote,
+                  scaleEnabled: !_isDraggingNote,
+                  boundaryMargin: const EdgeInsets.only(
+                    right: 2650,
+                    bottom: 2400,
+                    left: 50,
+                    top: 50,
+                  ),
+                  minScale: 0.5,
+                  maxScale: 5,
                   clipBehavior: Clip.none,
-                  children: state.notes.map((note) {
-                    return DraggableStickyNote(
-                      key: ValueKey(note.id),
-                      note: note,
-                      transformationController: _transformationController,
-                      onDragStart: () {
-                        context.read<NotesCubit>().bringToFront(note.id);
-                        _setDragging(true);
-                      },
-                      onDragEnd: () => _setDragging(false),
-                      onPositionUpdate: (newPosition) {
-                        context.read<NotesCubit>().updateNotePosition(
-                          note.id,
-                          newPosition,
-                        );
-                      },
-                    );
-                  }).toList(),
+                  child: SizedBox(
+                    width: _canvasWidth,
+                    height: _canvasHeight,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        // Dotted background pattern - covers entire canvas
+                        Positioned.fill(
+                          child: CustomPaint(
+                            painter: DottedPatternPainter(
+                              canvasWidth: _canvasWidth,
+                              canvasHeight: _canvasHeight,
+                            ),
+                          ),
+                        ),
+                        // Notes on top
+                        ...state.notes.map((note) {
+                          return DraggableStickyNote(
+                            key: ValueKey(note.id),
+                            note: note,
+                            transformationController: _transformationController,
+                            onDragStart: () {
+                              context.read<NotesCubit>().bringToFront(note.id);
+                              _setDragging(true);
+                            },
+                            onDragEnd: () => _setDragging(false),
+                            onPositionUpdate: (newPosition) {
+                              context.read<NotesCubit>().updateNotePosition(
+                                note.id,
+                                newPosition,
+                              );
+                            },
+                          );
+                        }),
+                      ],
+                    ),
+                  ),
+                );
+              }
+              if (state is NotesError) {
+                return Center(child: Text('Error: ${state.message}'));
+              }
+              return const Center(
+                child: Text('Ketuk tombol + untuk menambah catatan!'),
+              );
+            },
+          ),
+
+          // fab
+          Positioned(
+            bottom: 165.0, // Memberi jarak dari bottom nav bar (jika ada)
+            right: 16.0,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildFabClusterButton(
+                  heroTag: 'zoomInFab',
+                  icon: const Icon(Icons.zoom_in, size: 30),
+                  onPressed: _zoomIn,
                 ),
-              ),
-            );
-          }
-          if (state is NotesError) {
-            return Center(child: Text('Error: ${state.message}'));
-          }
-          return const Center(
-            child: Text('Ketuk tombol + untuk menambah catatan!'),
-          );
-        },
+                _buildFabClusterButton(
+                  heroTag: 'zoomOutFab',
+                  icon: const Icon(Icons.zoom_out, size: 30),
+                  onPressed: _zoomOut,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
+    );
+  }
+
+  /// Helper widget untuk membuat tombol FAB yang lebih kecil dan konsisten
+  Widget _buildFabClusterButton({
+    required String heroTag,
+    required Widget icon,
+    required VoidCallback onPressed,
+  }) {
+    return FloatingActionButton.small(
+      heroTag: heroTag,
+      onPressed: onPressed,
+      elevation: 8,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+      backgroundColor: TColors.primaryColor,
+      foregroundColor: Colors.white,
+      child: icon,
     );
   }
 }
@@ -188,4 +310,35 @@ class _DraggableStickyNoteState extends State<DraggableStickyNote> {
       ),
     );
   }
+}
+
+// Custom Painter for dotted pattern background
+class DottedPatternPainter extends CustomPainter {
+  final double canvasWidth;
+  final double canvasHeight;
+
+  static const double _dotSpacing = 20.0;
+  static const double _dotRadius = 1.5;
+  static const Color _dotColor = Color(0xFF9E9E9E); // Gray color for dots
+
+  DottedPatternPainter({required this.canvasWidth, required this.canvasHeight});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = _dotColor
+      ..style = PaintingStyle.fill;
+
+    // Draw dots in a grid pattern covering entire canvas
+    for (double x = 0; x < canvasWidth; x += _dotSpacing) {
+      for (double y = 0; y < canvasHeight; y += _dotSpacing) {
+        canvas.drawCircle(Offset(x, y), _dotRadius, paint);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant DottedPatternPainter oldDelegate) =>
+      oldDelegate.canvasWidth != canvasWidth ||
+      oldDelegate.canvasHeight != canvasHeight;
 }

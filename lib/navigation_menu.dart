@@ -1,4 +1,3 @@
-import 'package:community_feedback/features/auth/presentation/screens/login/login_screen.dart';
 import 'package:community_feedback/features/notes/presentation/screens/notes_screen.dart';
 import 'package:community_feedback/utils/constant/colors.dart';
 import 'package:community_feedback/utils/constant/sizes.dart';
@@ -34,10 +33,7 @@ class _NavigationMenuState extends State<NavigationMenu>
       duration: const Duration(milliseconds: 300),
     );
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeInOut,
-      ),
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
     _animationController.forward();
   }
@@ -60,8 +56,6 @@ class _NavigationMenuState extends State<NavigationMenu>
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return Scaffold(
       backgroundColor: TColors.backgroundColor,
       extendBody: true,
@@ -81,15 +75,11 @@ class _NavigationMenuState extends State<NavigationMenu>
           ],
         ),
         child: ClipRRect(
-          borderRadius: const BorderRadius.vertical(
-            top: Radius.circular(28),
-          ),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
           child: Container(
             decoration: const BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.vertical(
-                top: Radius.circular(28),
-              ),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
             ),
             child: SafeArea(
               top: false,
@@ -101,10 +91,7 @@ class _NavigationMenuState extends State<NavigationMenu>
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
-                    _buildNavItem(
-                      icon: 'assets/icons/canvas.png',
-                      index: 0,
-                    ),
+                    _buildNavItem(icon: 'assets/icons/canvas.png', index: 0),
                     _buildNavItem(
                       icon: 'assets/icons/toplikes_icon.png',
                       index: 1,
@@ -128,7 +115,8 @@ class _NavigationMenuState extends State<NavigationMenu>
               builder: (context, value, child) {
                 return Transform.scale(
                   scale: value,
-                  child: FloatingActionButton.extended(
+                  child: FloatingActionButton.small(
+                    heroTag: 'mainAddFab',
                     onPressed: () {
                       showModalBottomSheet(
                         backgroundColor: TColors.backgroundColor,
@@ -144,35 +132,23 @@ class _NavigationMenuState extends State<NavigationMenu>
                     },
                     elevation: 8,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(50),
                     ),
                     backgroundColor: TColors.primaryColor,
-                    label: Text(
-                      'New Note',
-                      style: textTheme.labelLarge!.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                    icon: const FaIcon(
-                      FontAwesomeIcons.pen,
+                    child: const FaIcon(
+                      FontAwesomeIcons.plus,
                       color: Colors.white,
-                      size: 18,
+                      size: 20,
                     ),
                   ),
                 );
               },
             )
           : null,
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 
-  Widget _buildNavItem({
-    required String icon,
-    required int index,
-  }) {
+  Widget _buildNavItem({required String icon, required int index}) {
     final isSelected = _selectedIndex == index;
     final color = isSelected ? Colors.white : TColors.primaryColor;
 
@@ -180,28 +156,16 @@ class _NavigationMenuState extends State<NavigationMenu>
       child: GestureDetector(
         onTap: () => _selectedScreen(index),
         behavior: HitTestBehavior.opaque,
-          child: AnimatedContainer(
+        child: AnimatedContainer(
           duration: const Duration(milliseconds: 250),
           curve: Curves.easeInOut,
-          margin: EdgeInsets.symmetric(
-            horizontal: isSelected ? 4 : 2,
-          ),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 10,
-            vertical: 10,
-          ),
+          margin: EdgeInsets.symmetric(horizontal: isSelected ? 4 : 2),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           decoration: BoxDecoration(
-            color: isSelected
-                ? TColors.primaryColor
-                : Colors.transparent,
+            color: isSelected ? TColors.primaryColor : Colors.transparent,
             borderRadius: BorderRadius.circular(16),
           ),
-          child: Image.asset(
-            icon,
-            color: color,
-            width: 30,
-            height: 30,
-          ),
+          child: Image.asset(icon, color: color, width: 30, height: 30),
         ),
       ),
     );
