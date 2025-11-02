@@ -1,3 +1,4 @@
+import 'package:community_feedback/navigation_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -73,7 +74,6 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-
                 // Logo aplikasi
                 Container(
                       padding: const EdgeInsets.all(16),
@@ -253,7 +253,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    onPressed: _submitLogin,
+                                    onPressed: () {
+                                      Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const NavigationMenu(),
+                                        ),
+                                        (route) => false,
+                                      );
+                                    },
                                   ),
                                 )
                                 .animate()
