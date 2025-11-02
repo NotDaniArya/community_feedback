@@ -22,7 +22,7 @@ class _NavigationMenuState extends State<NavigationMenu>
 
   static final List<Widget> _listMenu = [
     const NotesScreen(),
-    const LoginScreen(),
+    Container(),
     Container(),
   ];
 
