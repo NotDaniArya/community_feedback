@@ -39,6 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final size = MediaQuery.of(context).size;
 
     // ref.listen(authNotifierProvider, (previous, next) {
     //   if (next is AsyncError) {
@@ -64,30 +65,105 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            child: Container(
-              margin: const EdgeInsetsGeometry.all(TSizes.scaffoldPadding),
-              child:
-                  Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Image.asset('assets/logos/app_logo.png'),
-                          const SizedBox(height: TSizes.mediumSpace),
-                          Image.asset('assets/images/auth_image.png'),
-                          const SizedBox(height: TSizes.mediumSpace),
-                          Text(
-                            'Login',
-                            style: textTheme.titleLarge!.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: TSizes.scaffoldPadding,
+              vertical: TSizes.largeSpace,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+
+                // Logo aplikasi
+                Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: TColors.primaryColor.withOpacity(0.2),
+                            blurRadius: 20,
+                            spreadRadius: 5,
                           ),
-                          const SizedBox(height: TSizes.mediumSpace),
-                          Form(
-                            key: _form,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                TInputTextField(
+                        ],
+                      ),
+                      child: Image.asset(
+                        'assets/logos/app_logo.png',
+                        height: 80,
+                        width: 80,
+                      ),
+                    )
+                    .animate()
+                    .scale(
+                      delay: 100.ms,
+                      duration: 600.ms,
+                      curve: Curves.easeOut,
+                    )
+                    .fadeIn(duration: 500.ms),
+                const SizedBox(height: TSizes.largeSpace),
+
+                // Welcome Text
+                Column(
+                  children: [
+                    Text(
+                          'Welcome Back!',
+                          style: textTheme.headlineSmall!.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey[900],
+                            letterSpacing: -0.5,
+                          ),
+                          textAlign: TextAlign.center,
+                        )
+                        .animate()
+                        .fadeIn(delay: 200.ms, duration: 500.ms)
+                        .slideY(begin: -0.2, duration: 500.ms),
+                    const SizedBox(height: TSizes.smallSpace),
+                    Text(
+                      'Login to your account to continue',
+                      style: textTheme.bodyMedium!.copyWith(
+                        color: TColors.secondaryText,
+                      ),
+                      textAlign: TextAlign.center,
+                    ).animate().fadeIn(delay: 300.ms, duration: 500.ms),
+                  ],
+                ),
+                const SizedBox(height: TSizes.spaceBtwSections),
+
+                // gambar auth
+                Image.asset(
+                      'assets/images/auth_image.png',
+                      height: size.height * 0.2,
+                      fit: BoxFit.contain,
+                    )
+                    .animate()
+                    .fadeIn(delay: 400.ms, duration: 500.ms)
+                    .slideY(begin: 0.1, duration: 500.ms),
+                const SizedBox(height: TSizes.spaceBtwSections),
+
+                // Form Card
+                Container(
+                      padding: const EdgeInsets.all(TSizes.largeSpace),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.08),
+                            blurRadius: 20,
+                            spreadRadius: 0,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Form(
+                        key: _form,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            // Email Field
+                            TInputTextField(
                                   icon: Icons.email_rounded,
                                   labelText: 'Email',
                                   inputType: TextInputType.emailAddress,
@@ -95,16 +171,40 @@ class _LoginScreenState extends State<LoginScreen> {
                                     _enteredEmail = value!;
                                   },
                                   maxLength: 50,
-                                ),
-                                const SizedBox(height: TSizes.spaceBtwItems),
-                                TextFormField(
+                                )
+                                .animate()
+                                .fadeIn(delay: 500.ms, duration: 400.ms)
+                                .slideX(begin: -0.1, duration: 400.ms),
+                            const SizedBox(height: TSizes.spaceBtwItems),
+
+                            // Password Field
+                            TextFormField(
                                   obscureText: !_isPasswordVisible,
                                   keyboardType: TextInputType.text,
                                   decoration: InputDecoration(
                                     labelText: 'Password',
-                                    prefixIcon: const Icon(Icons.lock),
+                                    prefixIcon: const Icon(
+                                      Icons.lock_rounded,
+                                      color: TColors.primaryColor,
+                                    ),
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12),
+                                      borderSide: const BorderSide(
+                                        color: Color.fromARGB(255, 45, 25, 25),
+                                      ),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: const BorderSide(
+                                        color: TColors.greyStroke,
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: const BorderSide(
+                                        color: TColors.primaryColor,
+                                        width: 2,
+                                      ),
                                     ),
                                     suffixIcon: IconButton(
                                       onPressed: () {
@@ -115,8 +215,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                       },
                                       icon: Icon(
                                         _isPasswordVisible
-                                            ? Icons.visibility
-                                            : Icons.visibility_off,
+                                            ? Icons.visibility_rounded
+                                            : Icons.visibility_off_rounded,
+                                        color: TColors.secondaryText,
                                       ),
                                     ),
                                     isDense: true,
@@ -135,71 +236,112 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onSaved: (value) {
                                     _enteredPass = value!;
                                   },
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: TSizes.spaceBtwItems),
-                          SizedBox(
-                            width: double.infinity,
-                            child: MyButton(
-                              text: Text(
-                                'Login',
-                                style: textTheme.bodyLarge!.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              onPressed: _submitLogin,
-                            ),
-                          ),
-                          const MyTextButton(
-                            text: Text('Don\'t have an account?'),
-                            buttonText: Text(
-                              'Register',
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            route: RegisterScreen(),
-                          ),
-                          const OrDivider(),
-                          const SizedBox(height: TSizes.mediumSpace),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: TColors.backgroundColor,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadiusGeometry.circular(10),
-                                side: const BorderSide(
-                                  color: TColors.greyStroke,
-                                  width: 1,
-                                ),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset('assets/logos/google_icon.png'),
-                                const SizedBox(width: 10),
-                                const Text(
-                                  'Google',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                            onPressed: () {},
-                          ),
-                          const SizedBox(height: TSizes.spaceBtwSections),
-                        ],
-                      )
-                      .animate(delay: 70.ms)
-                      .fade(duration: 600.ms, curve: Curves.easeOut)
-                      .slide(
-                        begin: const Offset(0, 0.2),
-                        duration: 600.ms,
-                        curve: Curves.easeOut,
+                                )
+                                .animate()
+                                .fadeIn(delay: 600.ms, duration: 400.ms)
+                                .slideX(begin: -0.1, duration: 400.ms),
+                            const SizedBox(height: TSizes.largeSpace),
+
+                            // Login Button
+                            SizedBox(
+                                  width: double.infinity,
+                                  child: MyButton(
+                                    text: Text(
+                                      'Login',
+                                      style: textTheme.bodyLarge!.copyWith(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    onPressed: _submitLogin,
+                                  ),
+                                )
+                                .animate()
+                                .fadeIn(delay: 700.ms, duration: 400.ms)
+                                .slideY(begin: 0.1, duration: 400.ms),
+                          ],
+                        ),
                       ),
+                    )
+                    .animate()
+                    .fadeIn(delay: 500.ms, duration: 500.ms)
+                    .slideY(
+                      begin: 0.2,
+                      duration: 500.ms,
+                      curve: Curves.easeOut,
+                    ),
+
+                const SizedBox(height: TSizes.spaceBtwItems),
+
+                // Register Link
+                MyTextButton(
+                  text: Text(
+                    'Don\'t have an account?',
+                    style: textTheme.bodyMedium!.copyWith(
+                      color: TColors.secondaryText,
+                    ),
+                  ),
+                  buttonText: Text(
+                    'Register',
+                    style: textTheme.bodyMedium!.copyWith(
+                      color: TColors.primaryColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  route: const RegisterScreen(),
+                ).animate().fadeIn(delay: 800.ms, duration: 400.ms),
+
+                // Divider
+                const OrDivider().animate().fadeIn(
+                  delay: 900.ms,
+                  duration: 400.ms,
+                ),
+
+                const SizedBox(height: TSizes.spaceBtwItems),
+
+                // Google Sign In Button
+                ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.grey[900],
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          side: BorderSide(
+                            color: TColors.greyStroke.withOpacity(0.5),
+                            width: 1.5,
+                          ),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 16,
+                          horizontal: 24,
+                        ),
+                      ),
+                      onPressed: () {},
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/logos/google_icon.png',
+                            height: 20,
+                            width: 20,
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            'Continue with Google',
+                            style: textTheme.bodyLarge!.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                    .animate()
+                    .fadeIn(delay: 1000.ms, duration: 400.ms)
+                    .slideY(begin: 0.1, duration: 400.ms),
+
+                const SizedBox(height: TSizes.spaceBtwSections),
+              ],
             ),
           ),
         ),

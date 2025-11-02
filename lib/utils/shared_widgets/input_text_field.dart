@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../constant/colors.dart';
+
 class TInputTextField extends StatelessWidget {
   const TInputTextField({
     super.key,
@@ -32,9 +34,20 @@ class TInputTextField extends StatelessWidget {
       controller: controller,
       decoration: InputDecoration(
         labelText: labelText,
-        prefixIcon: Icon(icon),
+        prefixIcon: Icon(icon, color: TColors.primaryColor),
         isDense: true,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: TColors.greyStroke),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: TColors.greyStroke),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: TColors.primaryColor, width: 2),
+        ),
       ),
       maxLength: maxLength,
       keyboardType: inputType,
