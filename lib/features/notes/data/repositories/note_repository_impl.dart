@@ -76,6 +76,7 @@ class NoteRepositoryImpl implements NoteRepository {
   NoteEntity _mapDataToEntity(Note data) {
     return NoteEntity(
       id: data.id,
+      title: data.title,
       content: data.content,
       username: data.username,
       userProfileImage: data.userProfileImage,
@@ -87,6 +88,7 @@ class NoteRepositoryImpl implements NoteRepository {
 
   NotesCompanion _mapEntityToCompanion(NoteEntity entity) {
     return NotesCompanion(
+      title: Value(entity.title),
       content: Value(entity.content),
       username: Value(entity.username),
       userProfileImage: Value(entity.userProfileImage),

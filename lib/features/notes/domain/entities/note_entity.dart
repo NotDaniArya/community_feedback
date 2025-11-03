@@ -3,6 +3,7 @@ import 'package:flutter/animation.dart';
 
 class NoteEntity extends Equatable {
   final int id;
+  final String title;
   final String content;
   final String username;
   final String userProfileImage;
@@ -12,6 +13,7 @@ class NoteEntity extends Equatable {
 
   const NoteEntity({
     required this.id,
+    required this.title,
     required this.content,
     required this.username,
     required this.userProfileImage,
@@ -24,6 +26,7 @@ class NoteEntity extends Equatable {
   // TODO: implement props
   List<Object?> get props => [
     id,
+    title,
     content,
     username,
     userProfileImage,

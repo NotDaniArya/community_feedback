@@ -23,9 +23,31 @@ class _NotesScreenState extends State<NotesScreen> {
 
   bool _isDraggingNote = false;
 
+  late int _currentScalePercent;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _currentScalePercent = 100;
+    _transformationController.addListener(_onScaleUpdate);
+  }
+
+  void _onScaleUpdate() {
+    final scale = _transformationController.value.getMaxScaleOnAxis();
+    final newPercent = (scale * 100).round();
+
+    if (newPercent != _currentScalePercent) {
+      setState(() {
+        _currentScalePercent = newPercent;
+      });
+    }
+  }
+
   @override
   void dispose() {
     _transformationController.dispose();
+    _transformationController.removeListener(_onScaleUpdate);
     super.dispose();
   }
 
@@ -38,13 +60,13 @@ class _NotesScreenState extends State<NotesScreen> {
   void _zoomIn() {
     const double maxScale = 2.0;
     const double scaleFactor = 1.2;
-    
+
     // Get current scale from transformation matrix
     final currentScale = _transformationController.value.getMaxScaleOnAxis();
-    
+
     // Calculate new scale after zoom in
     final newScale = currentScale * scaleFactor;
-    
+
     // Check if new scale exceeds maximum
     if (newScale > maxScale) {
       // If already at or above max, don't zoom further
@@ -62,13 +84,13 @@ class _NotesScreenState extends State<NotesScreen> {
   void _zoomOut() {
     const double minScale = 0.8;
     const double scaleFactor = 0.8;
-    
+
     // Get current scale from transformation matrix
     final currentScale = _transformationController.value.getMaxScaleOnAxis();
-    
+
     // Calculate new scale after zoom out
     final newScale = currentScale * scaleFactor;
-    
+
     // Check if new scale goes below minimum
     if (newScale < minScale) {
       // If already at or below min, don't zoom further
@@ -94,7 +116,7 @@ class _NotesScreenState extends State<NotesScreen> {
       Matrix4.inverted(_transformationController.value),
       screenCenter,
     );
-    
+
     final newMatrix = _transformationController.value.clone()
       ..translate(canvasFocus.dx, canvasFocus.dy)
       ..scale(scaleFactor)
@@ -183,11 +205,17 @@ class _NotesScreenState extends State<NotesScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                // fab persentase scale
+                _buildZoomIndicator(heroTag: 'scalePercentage'),
+
+                // fab zoom in
                 _buildFabClusterButton(
                   heroTag: 'zoomInFab',
                   icon: const Icon(Icons.zoom_in, size: 30),
                   onPressed: _zoomIn,
                 ),
+
+                // fab zoom out
                 _buildFabClusterButton(
                   heroTag: 'zoomOutFab',
                   icon: const Icon(Icons.zoom_out, size: 30),
@@ -197,6 +225,28 @@ class _NotesScreenState extends State<NotesScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildZoomIndicator({required String heroTag}) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return FloatingActionButton.small(
+      heroTag: heroTag,
+      onPressed: null,
+      elevation: 8,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+      backgroundColor: TColors.primaryColor,
+      foregroundColor: Colors.white,
+      child: Center(
+        child: Text(
+          '$_currentScalePercent%',
+          style: textTheme.labelMedium!.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }

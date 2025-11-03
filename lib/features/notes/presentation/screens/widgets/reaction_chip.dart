@@ -11,16 +11,18 @@ class ReactionChip extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Container(
-      padding: const EdgeInsetsGeometry.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsetsGeometry.symmetric(horizontal: 6, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.5),
-        borderRadius: BorderRadiusGeometry.circular(10),
+        color: const Color(0xFFF5F5F5),
+        borderRadius: BorderRadiusGeometry.circular(30),
+        border: Border.all(color: const Color(0xFFD9D9D9), width: 0.5),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
+        textBaseline: TextBaseline.ideographic,
         children: [
-          Text(emoji, style: const TextStyle(fontSize: 14)),
-          const SizedBox(width: TSizes.smallSpace),
+          Text(emoji, style: const TextStyle(fontSize: 12)),
+          const SizedBox(width: TSizes.smallSpace / 2),
           Text('10', style: textTheme.labelSmall),
         ],
       ),

@@ -41,14 +41,16 @@ class NotesCubit extends Cubit<NotesState> {
 
   Future<void> addNote({
     Offset? initialPosition,
+    required String noteTitle,
     required String noteContent,
     required Color color,
   }) async {
     final random = Random();
     final newNote = NoteEntity(
       id: 0,
+      title: noteTitle,
       content: noteContent,
-      username: 'User Testing',
+      username: 'Muhammad Dani Arya Putra',
       userProfileImage: 'https://i.pravatar.cc/150',
       color: color,
       position:
@@ -56,13 +58,15 @@ class NotesCubit extends Cubit<NotesState> {
           Offset(random.nextDouble() * 200, random.nextDouble() * 400),
       createdAt: DateTime.now(),
     );
-    await _repository.addNote(newNote);
+    final result = await _repository.addNote(newNote);
+
+    result.fold((l) => throw Exception(l.toString()), (r) => null);
   }
 
   Future<void> updateNotePosition(int id, Offset newPosition) async {
     await _repository.updateNotePosition(id, newPosition);
-    print(newPosition.dx);
-    print(newPosition.dy);
+    // print(newPosition.dx);
+    // print(newPosition.dy);
   }
 
   Future<void> deleteNote(int id) async {

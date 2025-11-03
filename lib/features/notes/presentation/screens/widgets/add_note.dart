@@ -4,6 +4,7 @@ import 'package:community_feedback/features/notes/presentation/screens/widgets/n
 import 'package:community_feedback/utils/constant/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:toastification/toastification.dart';
 
 import '../../../../../utils/constant/sizes.dart';
 import '../../../../../utils/shared_widgets/button.dart';
@@ -19,6 +20,7 @@ class AddNote extends StatefulWidget {
 class _AddNoteState extends State<AddNote> {
   final _formKey = GlobalKey<FormState>();
   final _noteContentController = TextEditingController();
+  final _noteTitleController = TextEditingController();
   late Color _selectedColor;
   File? _selectedImage;
 
@@ -31,22 +33,48 @@ class _AddNoteState extends State<AddNote> {
   @override
   void dispose() {
     _noteContentController.dispose();
+    _noteTitleController.dispose();
     super.dispose();
   }
 
-  void _submitNote() {
+  void _submitNote() async {
     final isValid = _formKey.currentState!.validate();
 
     if (!isValid) {
       return;
     }
 
-    context.read<NotesCubit>().addNote(
-      noteContent: _noteContentController.text.trim(),
-      color: _selectedColor,
-    );
+    try {
+      await context.read<NotesCubit>().addNote(
+        noteTitle: _noteTitleController.text.trim(),
+        noteContent: _noteContentController.text.trim(),
+        color: _selectedColor,
+      );
 
-    Navigator.pop(context);
+      if (!mounted) return;
+      Navigator.pop(context);
+
+      toastification.show(
+        context: context,
+        type: ToastificationType.success,
+        style: ToastificationStyle.flatColored,
+        title: const Text('Sukses'),
+        alignment: Alignment.bottomRight,
+        autoCloseDuration: const Duration(seconds: 5),
+        icon: const Icon(Icons.check),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      toastification.show(
+        context: context,
+        type: ToastificationType.error,
+        style: ToastificationStyle.flatColored,
+        title: Text(e.toString().replaceFirst('Exception: ', '')),
+        alignment: Alignment.bottomRight,
+        autoCloseDuration: const Duration(seconds: 5),
+        icon: const Icon(Icons.check),
+      );
+    }
   }
 
   @override
@@ -73,22 +101,61 @@ class _AddNoteState extends State<AddNote> {
                 ),
               ),
               const SizedBox(height: 16),
-              Text('Note Baru', style: textTheme.titleMedium),
+              Text('Add New Feedback', style: textTheme.titleMedium),
               const SizedBox(height: TSizes.spaceBtwItems),
+              SizedBox(
+                width: double.infinity,
+                child: Text(
+                  'Title',
+                  style: textTheme.bodyLarge!.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(height: TSizes.smallSpace),
               TextFormField(
-                controller: _noteContentController,
+                controller: _noteTitleController,
                 decoration: const InputDecoration(
-                  labelText: 'Isi Note',
+                  hintText: 'Add title...',
                   alignLabelWithHint: true,
                   border: OutlineInputBorder(),
                   fillColor: Colors.white,
                 ),
-                minLines: 2,
-                maxLines: 5,
-                maxLength: 200,
+                minLines: 1,
+                maxLines: 2,
+                maxLength: 80,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Note tidak boleh kosong.';
+                    return 'Note title cannot be empty!';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: TSizes.spaceBtwItems),
+              SizedBox(
+                width: double.infinity,
+                child: Text(
+                  'Description',
+                  style: textTheme.bodyLarge!.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(height: TSizes.smallSpace),
+              TextFormField(
+                controller: _noteContentController,
+                decoration: const InputDecoration(
+                  hintText: 'Write your feedback...',
+                  alignLabelWithHint: true,
+                  border: OutlineInputBorder(),
+                  fillColor: Colors.white,
+                ),
+                minLines: 5,
+                maxLines: 5,
+                maxLength: 250,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Note description cannot be empty';
                   }
                   return null;
                 },
@@ -138,9 +205,12 @@ class _AddNoteState extends State<AddNote> {
                 width: double.infinity,
                 child: MyButton(
                   onPressed: _submitNote,
-                  text: const Text(
-                    'Simpan Note',
-                    style: TextStyle(color: Colors.white),
+                  text:  Text(
+                    'Add to Canvas',
+                    style: textTheme.bodyLarge !.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),

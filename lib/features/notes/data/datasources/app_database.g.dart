@@ -21,6 +21,15 @@ class $NotesTable extends Notes with TableInfo<$NotesTable, Note> {
       'PRIMARY KEY AUTOINCREMENT',
     ),
   );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _contentMeta = const VerificationMeta(
     'content',
   );
@@ -99,6 +108,7 @@ class $NotesTable extends Notes with TableInfo<$NotesTable, Note> {
   @override
   List<GeneratedColumn> get $columns => [
     id,
+    title,
     content,
     username,
     userProfileImage,
@@ -121,6 +131,14 @@ class $NotesTable extends Notes with TableInfo<$NotesTable, Note> {
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
     }
     if (data.containsKey('content')) {
       context.handle(
@@ -194,6 +212,10 @@ class $NotesTable extends Notes with TableInfo<$NotesTable, Note> {
         DriftSqlType.int,
         data['${effectivePrefix}id'],
       )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
       content: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}content'],
@@ -233,6 +255,7 @@ class $NotesTable extends Notes with TableInfo<$NotesTable, Note> {
 
 class Note extends DataClass implements Insertable<Note> {
   final int id;
+  final String title;
   final String content;
   final String username;
   final String userProfileImage;
@@ -242,6 +265,7 @@ class Note extends DataClass implements Insertable<Note> {
   final DateTime createdAt;
   const Note({
     required this.id,
+    required this.title,
     required this.content,
     required this.username,
     required this.userProfileImage,
@@ -254,6 +278,7 @@ class Note extends DataClass implements Insertable<Note> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
+    map['title'] = Variable<String>(title);
     map['content'] = Variable<String>(content);
     map['username'] = Variable<String>(username);
     map['user_profile_image'] = Variable<String>(userProfileImage);
@@ -267,6 +292,7 @@ class Note extends DataClass implements Insertable<Note> {
   NotesCompanion toCompanion(bool nullToAbsent) {
     return NotesCompanion(
       id: Value(id),
+      title: Value(title),
       content: Value(content),
       username: Value(username),
       userProfileImage: Value(userProfileImage),
@@ -284,6 +310,7 @@ class Note extends DataClass implements Insertable<Note> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Note(
       id: serializer.fromJson<int>(json['id']),
+      title: serializer.fromJson<String>(json['title']),
       content: serializer.fromJson<String>(json['content']),
       username: serializer.fromJson<String>(json['username']),
       userProfileImage: serializer.fromJson<String>(json['userProfileImage']),
@@ -298,6 +325,7 @@ class Note extends DataClass implements Insertable<Note> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
+      'title': serializer.toJson<String>(title),
       'content': serializer.toJson<String>(content),
       'username': serializer.toJson<String>(username),
       'userProfileImage': serializer.toJson<String>(userProfileImage),
@@ -310,6 +338,7 @@ class Note extends DataClass implements Insertable<Note> {
 
   Note copyWith({
     int? id,
+    String? title,
     String? content,
     String? username,
     String? userProfileImage,
@@ -319,6 +348,7 @@ class Note extends DataClass implements Insertable<Note> {
     DateTime? createdAt,
   }) => Note(
     id: id ?? this.id,
+    title: title ?? this.title,
     content: content ?? this.content,
     username: username ?? this.username,
     userProfileImage: userProfileImage ?? this.userProfileImage,
@@ -330,6 +360,7 @@ class Note extends DataClass implements Insertable<Note> {
   Note copyWithCompanion(NotesCompanion data) {
     return Note(
       id: data.id.present ? data.id.value : this.id,
+      title: data.title.present ? data.title.value : this.title,
       content: data.content.present ? data.content.value : this.content,
       username: data.username.present ? data.username.value : this.username,
       userProfileImage: data.userProfileImage.present
@@ -346,6 +377,7 @@ class Note extends DataClass implements Insertable<Note> {
   String toString() {
     return (StringBuffer('Note(')
           ..write('id: $id, ')
+          ..write('title: $title, ')
           ..write('content: $content, ')
           ..write('username: $username, ')
           ..write('userProfileImage: $userProfileImage, ')
@@ -360,6 +392,7 @@ class Note extends DataClass implements Insertable<Note> {
   @override
   int get hashCode => Object.hash(
     id,
+    title,
     content,
     username,
     userProfileImage,
@@ -373,6 +406,7 @@ class Note extends DataClass implements Insertable<Note> {
       identical(this, other) ||
       (other is Note &&
           other.id == this.id &&
+          other.title == this.title &&
           other.content == this.content &&
           other.username == this.username &&
           other.userProfileImage == this.userProfileImage &&
@@ -384,6 +418,7 @@ class Note extends DataClass implements Insertable<Note> {
 
 class NotesCompanion extends UpdateCompanion<Note> {
   final Value<int> id;
+  final Value<String> title;
   final Value<String> content;
   final Value<String> username;
   final Value<String> userProfileImage;
@@ -393,6 +428,7 @@ class NotesCompanion extends UpdateCompanion<Note> {
   final Value<DateTime> createdAt;
   const NotesCompanion({
     this.id = const Value.absent(),
+    this.title = const Value.absent(),
     this.content = const Value.absent(),
     this.username = const Value.absent(),
     this.userProfileImage = const Value.absent(),
@@ -403,6 +439,7 @@ class NotesCompanion extends UpdateCompanion<Note> {
   });
   NotesCompanion.insert({
     this.id = const Value.absent(),
+    required String title,
     required String content,
     required String username,
     required String userProfileImage,
@@ -410,7 +447,8 @@ class NotesCompanion extends UpdateCompanion<Note> {
     required double positionX,
     required double positionY,
     required DateTime createdAt,
-  }) : content = Value(content),
+  }) : title = Value(title),
+       content = Value(content),
        username = Value(username),
        userProfileImage = Value(userProfileImage),
        color = Value(color),
@@ -419,6 +457,7 @@ class NotesCompanion extends UpdateCompanion<Note> {
        createdAt = Value(createdAt);
   static Insertable<Note> custom({
     Expression<int>? id,
+    Expression<String>? title,
     Expression<String>? content,
     Expression<String>? username,
     Expression<String>? userProfileImage,
@@ -429,6 +468,7 @@ class NotesCompanion extends UpdateCompanion<Note> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (title != null) 'title': title,
       if (content != null) 'content': content,
       if (username != null) 'username': username,
       if (userProfileImage != null) 'user_profile_image': userProfileImage,
@@ -441,6 +481,7 @@ class NotesCompanion extends UpdateCompanion<Note> {
 
   NotesCompanion copyWith({
     Value<int>? id,
+    Value<String>? title,
     Value<String>? content,
     Value<String>? username,
     Value<String>? userProfileImage,
@@ -451,6 +492,7 @@ class NotesCompanion extends UpdateCompanion<Note> {
   }) {
     return NotesCompanion(
       id: id ?? this.id,
+      title: title ?? this.title,
       content: content ?? this.content,
       username: username ?? this.username,
       userProfileImage: userProfileImage ?? this.userProfileImage,
@@ -466,6 +508,9 @@ class NotesCompanion extends UpdateCompanion<Note> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<int>(id.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
     }
     if (content.present) {
       map['content'] = Variable<String>(content.value);
@@ -495,6 +540,7 @@ class NotesCompanion extends UpdateCompanion<Note> {
   String toString() {
     return (StringBuffer('NotesCompanion(')
           ..write('id: $id, ')
+          ..write('title: $title, ')
           ..write('content: $content, ')
           ..write('username: $username, ')
           ..write('userProfileImage: $userProfileImage, ')
@@ -521,6 +567,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
 typedef $$NotesTableCreateCompanionBuilder =
     NotesCompanion Function({
       Value<int> id,
+      required String title,
       required String content,
       required String username,
       required String userProfileImage,
@@ -532,6 +579,7 @@ typedef $$NotesTableCreateCompanionBuilder =
 typedef $$NotesTableUpdateCompanionBuilder =
     NotesCompanion Function({
       Value<int> id,
+      Value<String> title,
       Value<String> content,
       Value<String> username,
       Value<String> userProfileImage,
@@ -551,6 +599,11 @@ class $$NotesTableFilterComposer extends Composer<_$AppDatabase, $NotesTable> {
   });
   ColumnFilters<int> get id => $composableBuilder(
     column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -604,6 +657,11 @@ class $$NotesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get content => $composableBuilder(
     column: $table.content,
     builder: (column) => ColumnOrderings(column),
@@ -651,6 +709,9 @@ class $$NotesTableAnnotationComposer
   });
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
 
   GeneratedColumn<String> get content =>
       $composableBuilder(column: $table.content, builder: (column) => column);
@@ -705,6 +766,7 @@ class $$NotesTableTableManager
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
+                Value<String> title = const Value.absent(),
                 Value<String> content = const Value.absent(),
                 Value<String> username = const Value.absent(),
                 Value<String> userProfileImage = const Value.absent(),
@@ -714,6 +776,7 @@ class $$NotesTableTableManager
                 Value<DateTime> createdAt = const Value.absent(),
               }) => NotesCompanion(
                 id: id,
+                title: title,
                 content: content,
                 username: username,
                 userProfileImage: userProfileImage,
@@ -725,6 +788,7 @@ class $$NotesTableTableManager
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
+                required String title,
                 required String content,
                 required String username,
                 required String userProfileImage,
@@ -734,6 +798,7 @@ class $$NotesTableTableManager
                 required DateTime createdAt,
               }) => NotesCompanion.insert(
                 id: id,
+                title: title,
                 content: content,
                 username: username,
                 userProfileImage: userProfileImage,
