@@ -1,0 +1,25 @@
+import 'package:community_feedback/utils/constant/colors.dart';
+import 'package:community_feedback/utils/constant/sizes.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+
+ElevatedButton ButtonRadiusEight(
+  TextTheme textTheme, {
+  required Color bgColor,
+  required Color textColor,
+  required List<Widget> child,
+  required VoidCallback onPressed,
+}) {
+  return ElevatedButton(
+    onPressed: onPressed,
+    style: ElevatedButton.styleFrom(
+      padding: const EdgeInsetsGeometry.symmetric(horizontal: 12),
+      backgroundColor: bgColor,
+      foregroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadiusGeometry.all(Radius.circular(8)),
+      ),
+    ),
+    child: Row(mainAxisAlignment: MainAxisAlignment.center, children: child),
+  );
+}

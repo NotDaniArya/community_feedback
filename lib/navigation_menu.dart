@@ -118,16 +118,11 @@ class _NavigationMenuState extends State<NavigationMenu>
                   child: FloatingActionButton.small(
                     heroTag: 'mainAddFab',
                     onPressed: () {
-                      showModalBottomSheet(
-                        backgroundColor: TColors.backgroundColor,
-                        context: context,
-                        isScrollControlled: true,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(28),
-                          ),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AddNote(),
                         ),
-                        builder: (context) => const AddNote(),
                       );
                     },
                     elevation: 8,
