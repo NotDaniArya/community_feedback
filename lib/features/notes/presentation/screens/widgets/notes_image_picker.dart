@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:community_feedback/utils/constant/colors.dart';
 import 'package:community_feedback/utils/constant/sizes.dart';
+import 'package:community_feedback/utils/shared_widgets/button_radius_eight.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -10,7 +11,7 @@ import 'package:image_picker/image_picker.dart';
 class NotesImagePicker extends StatefulWidget {
   const NotesImagePicker({super.key, required this.onImageSelected});
 
-  final void Function(File image) onImageSelected;
+  final void Function(File? image) onImageSelected;
 
   @override
   State<NotesImagePicker> createState() => _NotesImagePickerState();
@@ -98,53 +99,120 @@ class _NotesImagePickerState extends State<NotesImagePicker> {
                   ),
                 ),
                 child: Align(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsetsGeometry.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
-                      ),
-                      backgroundColor: Colors.black.withOpacity(0.3),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadiusGeometry.circular(12),
-                      ),
-                    ),
-                    onPressed: () => _showImagesourceSheet(context),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const FaIcon(
-                          FontAwesomeIcons.penToSquare,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                        const SizedBox(width: TSizes.smallSpace),
-                        Text(
-                          'Ganti gambar',
-                          style: textTheme.labelMedium!.copyWith(
-                            color: Colors.white,
+                  alignment: Alignment.center,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ButtonRadiusEight(
+                        textTheme,
+                        bgColor: Colors.white,
+                        textColor: TColors.secondaryText,
+                        child: [
+                          const FaIcon(
+                            FontAwesomeIcons.penToSquare,
+                            size: 25,
+                            color: TColors.secondaryText,
                           ),
-                        ),
-                      ],
-                    ),
+                          const SizedBox(width: TSizes.smallSpace),
+                          Text(
+                            'Ganti',
+                            style: textTheme.bodyLarge!.copyWith(
+                              color: TColors.secondaryText,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                        onPressed: () {
+                          _showImagesourceSheet(context);
+                        },
+                      ),
+                      const SizedBox(width: TSizes.mediumSpace),
+                      ButtonRadiusEight(
+                        textTheme,
+                        bgColor: Colors.red,
+                        textColor: Colors.white,
+                        child: [
+                          Text(
+                            'Hapus',
+                            style: textTheme.bodyLarge!.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                        onPressed: () {
+                          setState(() {
+                            _pickedImageFile = null;
+                          });
+                          widget.onImageSelected(null);
+                        },
+                      ),
+                    ],
                   ),
                 ),
               )
-            : OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(12)),
+            : Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset('assets/icons/pick_image.png'),
+                  const SizedBox(height: TSizes.smallSpace),
+                  Text(
+                    'Ketuk untuk unggah atau ambil foto',
+                    style: textTheme.bodyMedium,
                   ),
-                ),
-                onPressed: () => _showImagesourceSheet(context),
-                child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    FaIcon(FontAwesomeIcons.image),
-                    SizedBox(width: TSizes.smallSpace),
-                    Text('Ingin masukkan gambar?'),
-                  ],
-                ),
+                  const SizedBox(height: TSizes.smallSpace),
+                  Text(
+                    'Format yang didukung: JPG, PNG Kurang dari 2 MB.',
+                    style: textTheme.labelSmall,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: TSizes.smallSpace),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ButtonRadiusEight(
+                        textTheme,
+                        child: [
+                          const Icon(Icons.file_upload_outlined, size: 25),
+                          const SizedBox(width: TSizes.smallSpace),
+                          Text(
+                            'Pilih Foto',
+                            style: textTheme.bodyLarge!.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                        bgColor: TColors.primaryColor,
+                        textColor: Colors.white,
+                        onPressed: () => _pickImage(ImageSource.gallery),
+                      ),
+                      const SizedBox(width: TSizes.mediumSpace),
+                      ButtonRadiusEight(
+                        textTheme,
+                        child: [
+                          const Icon(
+                            Icons.camera_alt_rounded,
+                            size: 25,
+                            color: TColors.secondaryText,
+                          ),
+                          const SizedBox(width: TSizes.smallSpace),
+                          Text(
+                            'Ambil Foto',
+                            style: textTheme.bodyLarge!.copyWith(
+                              color: TColors.secondaryText,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                        bgColor: Colors.white,
+                        textColor: TColors.secondaryText,
+                        onPressed: () => _pickImage(ImageSource.gallery),
+                      ),
+                    ],
+                  ),
+                ],
               ),
       ],
     );
