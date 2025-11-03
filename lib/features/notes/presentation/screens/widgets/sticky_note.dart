@@ -21,7 +21,7 @@ class StickyNote extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return Container(
-      width: 270,
+      width: 320,
       margin: const EdgeInsets.all(TSizes.smallSpace),
       child: Container(
         padding: const EdgeInsets.all(12.0),

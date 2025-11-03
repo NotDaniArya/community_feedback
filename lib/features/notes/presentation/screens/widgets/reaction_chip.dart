@@ -23,7 +23,7 @@ class ReactionChip extends StatelessWidget {
         children: [
           Text(emoji, style: const TextStyle(fontSize: 12)),
           const SizedBox(width: TSizes.smallSpace / 2),
-          Text('10', style: textTheme.labelSmall),
+          Text('100', style: textTheme.labelSmall),
         ],
       ),
     );
