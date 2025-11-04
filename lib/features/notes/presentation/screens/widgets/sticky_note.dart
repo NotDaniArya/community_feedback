@@ -1,15 +1,10 @@
 import 'package:community_feedback/features/notes/domain/entities/note_entity.dart';
 import 'package:community_feedback/features/notes/presentation/screens/widgets/reaction_chip.dart';
 import 'package:community_feedback/utils/constant/colors.dart';
-import 'package:community_feedback/utils/shared_widgets/avatar_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../../main.dart';
 import '../../../../../utils/constant/sizes.dart';
-import '../../cubit/notes_cubit.dart';
 
 class StickyNote extends StatelessWidget {
   final NoteEntity note;

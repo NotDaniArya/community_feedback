@@ -4,7 +4,6 @@ import 'package:community_feedback/features/notes/data/datasources/note_local_da
 import 'package:community_feedback/features/notes/data/repositories/note_repository_impl.dart';
 import 'package:community_feedback/features/notes/domain/repositories/note_repository.dart';
 import 'package:community_feedback/features/notes/presentation/cubit/notes_cubit.dart';
-import 'package:community_feedback/navigation_menu.dart';
 import 'package:community_feedback/splash_screen.dart';
 import 'package:community_feedback/utils/constant/colors.dart';
 import 'package:flutter/material.dart';

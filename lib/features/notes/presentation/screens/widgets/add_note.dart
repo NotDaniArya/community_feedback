@@ -10,7 +10,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:toastification/toastification.dart';
 
 import '../../../../../utils/constant/sizes.dart';
-import '../../../../../utils/shared_widgets/button.dart';
 import '../../cubit/notes_cubit.dart';
 
 class AddNote extends StatefulWidget {

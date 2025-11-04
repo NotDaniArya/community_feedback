@@ -1,7 +1,4 @@
-import 'package:community_feedback/utils/constant/colors.dart';
-import 'package:community_feedback/utils/constant/sizes.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 ElevatedButton ButtonRadiusEight(
   TextTheme textTheme, {
