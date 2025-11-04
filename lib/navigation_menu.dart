@@ -1,4 +1,5 @@
 import 'package:community_feedback/features/notes/presentation/screens/notes_screen.dart';
+import 'package:community_feedback/features/top%20likes%20and%20newest/presentations/screens/top_likes_newest_screen.dart';
 import 'package:community_feedback/utils/constant/colors.dart';
 import 'package:community_feedback/utils/constant/sizes.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,7 @@ class _NavigationMenuState extends State<NavigationMenu>
 
   static final List<Widget> _listMenu = [
     const NotesScreen(),
-    Container(),
+    const TopLikesNewestScreen(),
     Container(),
   ];
 

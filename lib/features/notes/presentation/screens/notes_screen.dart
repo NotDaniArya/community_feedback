@@ -82,7 +82,7 @@ class _NotesScreenState extends State<NotesScreen> {
   }
 
   void _zoomOut() {
-    const double minScale = 0.8;
+    const double minScale = 0.6;
     const double scaleFactor = 0.8;
 
     // Get current scale from transformation matrix
