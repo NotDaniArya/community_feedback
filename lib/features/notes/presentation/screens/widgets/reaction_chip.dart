@@ -1,3 +1,4 @@
+import 'package:community_feedback/utils/constant/colors.dart';
 import 'package:community_feedback/utils/constant/sizes.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +16,7 @@ class ReactionChip extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFFF5F5F5),
         borderRadius: BorderRadiusGeometry.circular(30),
-        border: Border.all(color: const Color(0xFFD9D9D9), width: 0.5),
+        border: Border.all(color: TColors.greyStroke, width: 0.5),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
