@@ -1,9 +1,12 @@
 import 'package:community_feedback/features/notes/presentation/cubit/notes_cubit.dart';
 import 'package:community_feedback/features/notes/presentation/cubit/notes_state.dart';
+import 'package:community_feedback/features/notes/presentation/screens/widgets/add_note.dart';
 import 'package:community_feedback/features/notes/presentation/screens/widgets/sticky_note.dart';
 import 'package:community_feedback/utils/constant/colors.dart';
+import 'package:community_feedback/utils/shared_widgets/pagination_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../domain/entities/note_entity.dart';
 
@@ -25,6 +28,9 @@ class _NotesScreenState extends State<NotesScreen> {
 
   late int _currentScalePercent;
 
+  int _currentPage = 1;
+  final _totalPages = 10;
+
   @override
   void initState() {
     super.initState();
@@ -44,11 +50,11 @@ class _NotesScreenState extends State<NotesScreen> {
     }
   }
 
-  @override
-  void dispose() {
-    _transformationController.dispose();
-    _transformationController.removeListener(_onScaleUpdate);
-    super.dispose();
+  void _onPageChanged(int newPage) {
+    if (newPage < 1 || newPage > _totalPages) return;
+    setState(() {
+      _currentPage = newPage;
+    });
   }
 
   void _setDragging(bool dragging) {
@@ -61,19 +67,15 @@ class _NotesScreenState extends State<NotesScreen> {
     const double maxScale = 2.0;
     const double scaleFactor = 1.2;
 
-    // Get current scale from transformation matrix
     final currentScale = _transformationController.value.getMaxScaleOnAxis();
 
-    // Calculate new scale after zoom in
     final newScale = currentScale * scaleFactor;
 
-    // Check if new scale exceeds maximum
     if (newScale > maxScale) {
-      // If already at or above max, don't zoom further
       if (currentScale >= maxScale) {
         return;
       }
-      // Limit to max scale
+
       final limitedScaleFactor = maxScale / currentScale;
       _applyZoom(limitedScaleFactor);
     } else {
@@ -85,19 +87,15 @@ class _NotesScreenState extends State<NotesScreen> {
     const double minScale = 0.6;
     const double scaleFactor = 0.8;
 
-    // Get current scale from transformation matrix
     final currentScale = _transformationController.value.getMaxScaleOnAxis();
 
-    // Calculate new scale after zoom out
     final newScale = currentScale * scaleFactor;
 
-    // Check if new scale goes below minimum
     if (newScale < minScale) {
-      // If already at or below min, don't zoom further
       if (currentScale <= minScale) {
         return;
       }
-      // Limit to min scale
+
       final limitedScaleFactor = minScale / currentScale;
       _applyZoom(limitedScaleFactor);
     } else {
@@ -105,7 +103,6 @@ class _NotesScreenState extends State<NotesScreen> {
     }
   }
 
-  /// Helper method to apply zoom transformation
   void _applyZoom(double scaleFactor) {
     final screenCenter = Offset(
       MediaQuery.of(context).size.width / 2,
@@ -123,6 +120,13 @@ class _NotesScreenState extends State<NotesScreen> {
       ..translate(-canvasFocus.dx, -canvasFocus.dy);
 
     _transformationController.value = newMatrix;
+  }
+
+  @override
+  void dispose() {
+    _transformationController.dispose();
+    _transformationController.removeListener(_onScaleUpdate);
+    super.dispose();
   }
 
   @override
@@ -156,7 +160,6 @@ class _NotesScreenState extends State<NotesScreen> {
                     child: Stack(
                       clipBehavior: Clip.none,
                       children: [
-                        // Dotted background pattern - covers entire canvas
                         Positioned.fill(
                           child: CustomPaint(
                             painter: DottedPatternPainter(
@@ -165,7 +168,7 @@ class _NotesScreenState extends State<NotesScreen> {
                             ),
                           ),
                         ),
-                        // Notes on top
+
                         ...state.notes.map((note) {
                           return DraggableStickyNote(
                             key: ValueKey(note.id),
@@ -198,33 +201,46 @@ class _NotesScreenState extends State<NotesScreen> {
             },
           ),
 
-          // fab
           Positioned(
-            bottom: 165.0, // Memberi jarak dari bottom nav bar (jika ada)
+            bottom: 0,
             right: 16.0,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // fab persentase scale
                 _buildZoomIndicator(heroTag: 'scalePercentage'),
 
-                // fab zoom in
                 _buildFabClusterButton(
                   heroTag: 'zoomInFab',
                   icon: const Icon(Icons.zoom_in, size: 30),
                   onPressed: _zoomIn,
                 ),
 
-                // fab zoom out
                 _buildFabClusterButton(
                   heroTag: 'zoomOutFab',
                   icon: const Icon(Icons.zoom_out, size: 30),
                   onPressed: _zoomOut,
                 ),
+                _buildFabClusterButton(
+                  heroTag: 'addFab',
+                  icon: const FaIcon(
+                    FontAwesomeIcons.plus,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const AddNote()),
+                  ),
+                ),
               ],
             ),
           ),
         ],
+      ),
+      bottomNavigationBar: PaginationBar(
+        currentPage: _currentPage,
+        totalPages: _totalPages,
+        onPageChanged: _onPageChanged,
       ),
     );
   }
@@ -251,7 +267,6 @@ class _NotesScreenState extends State<NotesScreen> {
     );
   }
 
-  /// Helper widget untuk membuat tombol FAB yang lebih kecil dan konsisten
   Widget _buildFabClusterButton({
     required String heroTag,
     required Widget icon,
@@ -362,14 +377,13 @@ class _DraggableStickyNoteState extends State<DraggableStickyNote> {
   }
 }
 
-// Custom Painter for dotted pattern background
 class DottedPatternPainter extends CustomPainter {
   final double canvasWidth;
   final double canvasHeight;
 
   static const double _dotSpacing = 20.0;
   static const double _dotRadius = 1.5;
-  static const Color _dotColor = Color(0xFF9E9E9E); // Gray color for dots
+  static const Color _dotColor = Color(0xFF9E9E9E);
 
   DottedPatternPainter({required this.canvasWidth, required this.canvasHeight});
 
@@ -379,7 +393,6 @@ class DottedPatternPainter extends CustomPainter {
       ..color = _dotColor
       ..style = PaintingStyle.fill;
 
-    // Draw dots in a grid pattern covering entire canvas
     for (double x = 0; x < canvasWidth; x += _dotSpacing) {
       for (double y = 0; y < canvasHeight; y += _dotSpacing) {
         canvas.drawCircle(Offset(x, y), _dotRadius, paint);

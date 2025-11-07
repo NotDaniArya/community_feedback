@@ -108,39 +108,6 @@ class _NavigationMenuState extends State<NavigationMenu>
           ),
         ),
       ),
-      floatingActionButton: _selectedIndex == 0
-          ? TweenAnimationBuilder<double>(
-              tween: Tween<double>(begin: 0.0, end: 1.0),
-              duration: const Duration(milliseconds: 400),
-              curve: Curves.elasticOut,
-              builder: (context, value, child) {
-                return Transform.scale(
-                  scale: value,
-                  child: FloatingActionButton.small(
-                    heroTag: 'mainAddFab',
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const AddNote(),
-                        ),
-                      );
-                    },
-                    elevation: 8,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    backgroundColor: TColors.primaryColor,
-                    child: const FaIcon(
-                      FontAwesomeIcons.plus,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                  ),
-                );
-              },
-            )
-          : null,
     );
   }
 
