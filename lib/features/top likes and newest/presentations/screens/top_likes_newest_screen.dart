@@ -4,6 +4,7 @@ import 'package:community_feedback/features/top%20likes%20and%20newest/presentat
 import 'package:community_feedback/features/top%20likes%20and%20newest/presentations/screens/widgets/my_search_bar.dart';
 import 'package:community_feedback/utils/constant/colors.dart';
 import 'package:community_feedback/utils/constant/sizes.dart';
+import 'package:community_feedback/utils/shared_widgets/pagination_bar.dart';
 import 'package:flutter/material.dart';
 
 class TopLikesNewestScreen extends StatefulWidget {
@@ -17,6 +18,24 @@ class _TopLikesNewestScreenState extends State<TopLikesNewestScreen> {
   final _searchController = TextEditingController();
   int _selectedFilterIndex = 0;
   DateTimeRange? _selectedDateRange;
+  int _currentPage = 1;
+  final int _totalPages = 10;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _searchController.addListener(() {
+      setState(() {});
+    });
+  }
+
+  void _onPageChanged(int newPage) {
+    if (newPage < 1 || newPage > _totalPages) return;
+    setState(() {
+      _currentPage = newPage;
+    });
+  }
 
   Future<void> _selectDateRange() async {
     final initialRange =
@@ -38,15 +57,6 @@ class _TopLikesNewestScreenState extends State<TopLikesNewestScreen> {
         _selectedDateRange = newRange;
       });
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    _searchController.addListener(() {
-      setState(() {});
-    });
   }
 
   @override
@@ -174,6 +184,11 @@ class _TopLikesNewestScreenState extends State<TopLikesNewestScreen> {
             ),
           ],
         ),
+      ),
+      bottomNavigationBar: PaginationBar(
+        currentPage: _currentPage,
+        totalPages: _totalPages,
+        onPageChanged: _onPageChanged,
       ),
     );
   }

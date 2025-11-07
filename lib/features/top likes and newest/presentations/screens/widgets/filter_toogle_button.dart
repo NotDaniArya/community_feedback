@@ -1,5 +1,4 @@
 import 'package:community_feedback/utils/constant/colors.dart';
-import 'package:community_feedback/utils/constant/sizes.dart';
 import 'package:flutter/material.dart';
 
 class FilterToogleButton extends StatelessWidget {
