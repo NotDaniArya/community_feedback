@@ -12,7 +12,7 @@ class ProfileImagePicker extends StatefulWidget {
   const ProfileImagePicker({
     super.key,
     required this.onImageSelected,
-    this.initialImageUrl,
+    required this.initialImageUrl,
   });
 
   final void Function(File image) onImageSelected;

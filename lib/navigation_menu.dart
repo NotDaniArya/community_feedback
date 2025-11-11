@@ -1,5 +1,6 @@
 import 'package:community_feedback/features/notes/presentation/screens/notes_screen.dart';
-import 'package:community_feedback/features/top%20likes%20and%20newest/presentations/screens/top_likes_newest_screen.dart';
+import 'package:community_feedback/features/profile/presentation/screens/profile_screen.dart';
+import 'package:community_feedback/features/top%20likes%20and%20newest/presentation/screens/top_likes_newest_screen.dart';
 import 'package:community_feedback/utils/constant/colors.dart';
 import 'package:community_feedback/utils/constant/sizes.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,7 @@ class _NavigationMenuState extends State<NavigationMenu>
   static final List<Widget> _listMenu = [
     const NotesScreen(),
     const TopLikesNewestScreen(),
-    Container(),
+    const ProfileScreen(),
   ];
 
   @override
@@ -97,10 +98,7 @@ class _NavigationMenuState extends State<NavigationMenu>
                       icon: 'assets/icons/toplikes_icon.png',
                       index: 1,
                     ),
-                    _buildNavItem(
-                      icon: 'assets/icons/settings_icon.png',
-                      index: 2,
-                    ),
+                    _buildNavItem(icon: 'assets/icons/profile.png', index: 2),
                   ],
                 ),
               ),
