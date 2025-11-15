@@ -318,6 +318,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       ),
                                     ),
                                     onPressed: _submitSignUp,
+                                    color: TColors.primaryColor,
                                   ),
                                 )
                                 .animate()

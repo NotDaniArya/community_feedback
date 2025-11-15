@@ -46,6 +46,13 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 
+	<!-- Launch URL -->
+	<key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>https</string>
+        <string>http</string>
+    </array>
+
 	<!-- image picker -->
     <key>NSPhotoLibraryUsageDescription</key>
 	<string>Community Feedback memerlukan akses ke galeri.</string>

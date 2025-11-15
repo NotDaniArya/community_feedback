@@ -263,6 +263,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         (route) => false,
                                       );
                                     },
+                                    color: TColors.primaryColor,
                                   ),
                                 )
                                 .animate()

@@ -6,6 +6,7 @@ import 'package:community_feedback/utils/constant/colors.dart';
 import 'package:community_feedback/utils/constant/sizes.dart';
 import 'package:community_feedback/utils/shared_widgets/pagination_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class TopLikesNewestScreen extends StatefulWidget {
   const TopLikesNewestScreen({super.key});
@@ -102,94 +103,111 @@ class _TopLikesNewestScreenState extends State<TopLikesNewestScreen> {
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate((context, index) {
                   return Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(TSizes.mediumSpace),
-                    margin: const EdgeInsets.only(
-                      bottom: TSizes.spaceBtwSections,
-                    ),
-                    decoration: BoxDecoration(
-                      color: TColors.pastelColors[0],
-                      borderRadius: BorderRadius.circular(8),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 6,
-                          offset: Offset(2, 2),
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(TSizes.mediumSpace),
+                        margin: const EdgeInsets.only(
+                          bottom: TSizes.spaceBtwSections,
                         ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const SizedBox(height: TSizes.mediumSpace),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        decoration: BoxDecoration(
+                          color: TColors.pastelColors[0],
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 6,
+                              offset: Offset(2, 2),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            Expanded(
-                              child: Text(
-                                'Muhammad Dani Arya Putra',
-                                style: textTheme.labelMedium!.copyWith(
-                                  color: TColors.secondaryText,
+                            const SizedBox(height: TSizes.mediumSpace),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    'Muhammad Dani Arya Putra',
+                                    style: textTheme.labelMedium!.copyWith(
+                                      color: TColors.secondaryText,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
+
+                                const SizedBox(width: TSizes.largeSpace),
+
+                                Text(
+                                  '12/12/2012',
+                                  style: textTheme.labelMedium!.copyWith(
+                                    color: TColors.secondaryText,
+                                  ),
+                                ),
+                              ],
                             ),
-
-                            const SizedBox(width: TSizes.largeSpace),
-
+                            const SizedBox(height: TSizes.mediumSpace),
                             Text(
-                              '12/12/2012',
-                              style: textTheme.labelMedium!.copyWith(
-                                color: TColors.secondaryText,
+                              'Ini Testing Aja',
+                              style: textTheme.titleMedium!.copyWith(
+                                fontWeight: FontWeight.bold,
                               ),
+                            ),
+                            const SizedBox(height: TSizes.mediumSpace),
+                            Image.asset(
+                              'assets/images/auth_image.png',
+                              fit: BoxFit.cover,
+                            ),
+                            const SizedBox(height: TSizes.mediumSpace),
+                            Text(
+                              'Lorem ipsum dolor sit amet consectetur. Dignissim dictum ipsum morbi eget. Praesent',
+                              style: textTheme.bodyMedium!.copyWith(
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                            const SizedBox(height: TSizes.mediumSpace),
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                ReactionChip(emoji: '❤️'),
+                                ReactionChip(emoji: '👍'),
+                                ReactionChip(emoji: '😂'),
+                                ReactionChip(emoji: '😮'),
+                                ReactionChip(emoji: '🔥'),
+                              ],
                             ),
                           ],
                         ),
-                        const SizedBox(height: TSizes.mediumSpace),
-                        Text(
-                          'Ini Testing Aja',
-                          style: textTheme.titleMedium!.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: TSizes.mediumSpace),
-                        Image.asset(
-                          'assets/images/auth_image.png',
-                          fit: BoxFit.cover,
-                        ),
-                        const SizedBox(height: TSizes.mediumSpace),
-                        Text(
-                          'Lorem ipsum dolor sit amet consectetur. Dignissim dictum ipsum morbi eget. Praesent',
-                          style: textTheme.bodyMedium!.copyWith(
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                        const SizedBox(height: TSizes.mediumSpace),
-                        const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            ReactionChip(emoji: '❤️'),
-                            ReactionChip(emoji: '👍'),
-                            ReactionChip(emoji: '😂'),
-                            ReactionChip(emoji: '😮'),
-                            ReactionChip(emoji: '🔥'),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
+                      )
+                      .animate() // Terapkan animasi
+                      .slideY(
+                        // Efek meluncur dari bawah saat layar dimuat
+                        begin: 2.0,
+                        end: 0.0,
+                        duration: 400.ms,
+                        curve: Curves.easeOutCubic,
+                      );
                 }, childCount: 7),
               ),
             ),
           ],
         ),
       ),
-      bottomNavigationBar: PaginationBar(
-        currentPage: _currentPage,
-        totalPages: _totalPages,
-        onPageChanged: _onPageChanged,
-      ),
+      bottomNavigationBar:
+          PaginationBar(
+                currentPage: _currentPage,
+                totalPages: _totalPages,
+                onPageChanged: _onPageChanged,
+              )
+              .animate() // Terapkan animasi
+              .slideY(
+                // Efek meluncur dari bawah saat layar dimuat
+                begin: 2.0,
+                end: 0.0,
+                duration: 400.ms,
+                curve: Curves.easeOutCubic,
+              ),
     );
   }
 }
@@ -241,7 +259,7 @@ class MyDelegateClass extends SliverPersistentHeaderDelegate {
             ],
           ),
         ],
-      ),
+      ).animate().fadeIn(duration: 300.ms, curve: Curves.easeIn),
     );
   }
 

@@ -37,7 +37,6 @@ class PersonalContainer extends StatelessWidget {
           ),
           const SizedBox(width: TSizes.spaceBtwSections),
           IconButton(
-            style: IconButton.styleFrom(padding: EdgeInsets.zero),
             onPressed: () {},
             icon: Row(
               children: [
