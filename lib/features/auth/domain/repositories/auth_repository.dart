@@ -1,27 +1,20 @@
-// import 'package:new_empowerme/core/failure.dart';
-// import 'package:new_empowerme/user_features/auth/domain/entities/auth.dart';
-//
-// abstract class AuthRepository {
-//   Future<(void, Failure?)> register({
-//     required String name,
-//     required String email,
-//     required String password,
-//     required String passwordConfirm,
-//   });
-//
-//   Future<(void, Failure?)> verifyOtp({
-//     required String email,
-//     required String otp,
-//   });
-//
-//   Future<(Auth?, Failure?)> login({
-//     required String email,
-//     required String password,
-//   });
-//
-//   Future<(Auth?, Failure?)> getCurrentUser();
-//
-//   Future<(void, Failure?)> logout();
-//
-//   Future<(void, Failure?)> requestOtp({required String email});
-// }
+import 'package:community_feedback/core/error/failures.dart';
+import 'package:community_feedback/features/auth/domain/entities/auth_entity.dart';
+import 'package:dartz/dartz.dart';
+
+abstract class AuthRepository {
+  // Future<(void, Failure?)> register({
+  //   required String name,
+  //   required String email,
+  //   required String password,
+  //   required String passwordConfirmation,
+  // });
+
+  Future<Either<Failure, AuthEntity>> login({
+    required String email,
+    required String password,
+    required bool rememberMe,
+  });
+
+  // Future<(Auth?, Failure?)> getCurrentUser();
+}
