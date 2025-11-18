@@ -37,6 +37,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
 
       if (response.statusCode == 200) {
+        print(response.data);
         return AuthModel.fromJson(response.data);
       } else {
         throw Failure.fromDioException(

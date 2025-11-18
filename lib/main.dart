@@ -1,11 +1,16 @@
 import 'dart:math';
 
+import 'package:community_feedback/features/auth/data/datasources/auth_remote_datasource.dart';
+import 'package:community_feedback/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:community_feedback/features/auth/domain/repositories/auth_repository.dart';
+import 'package:community_feedback/features/auth/domain/usecases/login_usecase.dart';
 import 'package:community_feedback/features/notes/data/datasources/note_local_datasource.dart';
 import 'package:community_feedback/features/notes/data/repositories/note_repository_impl.dart';
 import 'package:community_feedback/features/notes/domain/repositories/note_repository.dart';
 import 'package:community_feedback/features/notes/presentation/cubit/notes_cubit.dart';
 import 'package:community_feedback/splash_screen.dart';
 import 'package:community_feedback/utils/constant/colors.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -20,7 +25,6 @@ final theme = ThemeData().copyWith(
   textTheme: GoogleFonts.plusJakartaSansTextTheme(),
 );
 
-
 final random = Random();
 
 void main() {
@@ -34,6 +38,23 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
+        // Sediakan instance D,io (bisa juga dibuat sebagai provider terpisah)
+        RepositoryProvider<Dio>(create: (context) => Dio()),
+        // Sediakan DataSource, yang bergan,tung pada Dio
+        RepositoryProvider<AuthRemoteDataSource>(
+          create: (context) => AuthRemoteDataSourceImpl(context.read<Dio>()),
+        ),
+        // Sediakan Repository, ya,ng be,rgantung pada DataSource
+        RepositoryProvider<AuthRepository>(
+          create: (context) =>
+              AuthRepositoryImpl(context.read<AuthRemoteDataSource>()),
+        ),
+        // Sediakan UseCase, yang bergantung pada Repository
+        RepositoryProvider<LoginUsecase>(
+          create: (context) => LoginUsecase(context.read<AuthRepository>()),
+        ),
+
+        // ini local database
         RepositoryProvider<AppDatabase>(create: (context) => AppDatabase()),
         RepositoryProvider<NoteLocalDataSource>(
           create: (context) =>

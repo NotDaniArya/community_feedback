@@ -7,7 +7,6 @@ abstract class Failure extends Equatable {
   const Failure({required this.message});
 
   @override
-  // TODO: implement props
   List<Object?> get props => [message];
 
   factory Failure.fromDioException(DioException e) {
@@ -22,15 +21,32 @@ abstract class Failure extends Equatable {
             'Koneksi ke server terputus. Harap periksa internet Anda.';
         break;
       case DioExceptionType.badResponse:
-        if (e.response?.data != null &&
-            e.response!.data is Map &&
-            e.response!.data['message'] != null) {
-          errorMessage = e.response!.data['message'];
+        if (e.response?.data != null && e.response!.data is Map) {
+          final data = e.response!.data as Map<String, dynamic>;
+
+          if (data.containsKey('message')) {
+            errorMessage = data['message'];
+            break;
+          }
+          if (data.containsKey('error')) {
+            errorMessage = data['error'];
+            break;
+          }
+        }
+
+        if (statusCode == 401 || statusCode == 422 || statusCode == 403) {
+          errorMessage =
+              'Email atau password yang Anda masukkan salah. Harap periksa kembali.';
+        } else if (statusCode == 404) {
+          errorMessage = 'Layanan yang Anda tuju tidak ditemukan (404).';
+        } else if (statusCode == 500) {
+          errorMessage = 'Terjadi masalah di server (500). Coba lagi nanti.';
         } else {
           errorMessage =
-              'Server memberikan respons yang tidak valid. Kode: $statusCode';
+              'Server memberikan respons yang tidak terduga. Kode: $statusCode';
         }
         break;
+
       case DioExceptionType.cancel:
         errorMessage = 'Permintaan ke server dibatalkan.';
         break;
