@@ -3,12 +3,12 @@ import 'package:community_feedback/features/auth/domain/entities/auth_entity.dar
 import 'package:dartz/dartz.dart';
 
 abstract class AuthRepository {
-  // Future<(void, Failure?)> register({
-  //   required String name,
-  //   required String email,
-  //   required String password,
-  //   required String passwordConfirmation,
-  // });
+  Future<Either<Failure, void>> register({
+    required String name,
+    required String email,
+    required String password,
+    required String passwordConfirmation,
+  });
 
   Future<Either<Failure, AuthEntity>> login({
     required String email,

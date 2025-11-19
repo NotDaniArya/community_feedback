@@ -4,6 +4,7 @@ import 'package:community_feedback/features/auth/data/datasources/auth_remote_da
 import 'package:community_feedback/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:community_feedback/features/auth/domain/repositories/auth_repository.dart';
 import 'package:community_feedback/features/auth/domain/usecases/login_usecase.dart';
+import 'package:community_feedback/features/auth/domain/usecases/register_usecase.dart';
 import 'package:community_feedback/features/notes/data/datasources/note_local_datasource.dart';
 import 'package:community_feedback/features/notes/data/repositories/note_repository_impl.dart';
 import 'package:community_feedback/features/notes/domain/repositories/note_repository.dart';
@@ -38,23 +39,25 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        // Sediakan instance D,io (bisa juga dibuat sebagai provider terpisah)
         RepositoryProvider<Dio>(create: (context) => Dio()),
-        // Sediakan DataSource, yang bergan,tung pada Dio
+
         RepositoryProvider<AuthRemoteDataSource>(
           create: (context) => AuthRemoteDataSourceImpl(context.read<Dio>()),
         ),
-        // Sediakan Repository, ya,ng be,rgantung pada DataSource
+
         RepositoryProvider<AuthRepository>(
           create: (context) =>
               AuthRepositoryImpl(context.read<AuthRemoteDataSource>()),
         ),
-        // Sediakan UseCase, yang bergantung pada Repository
+
         RepositoryProvider<LoginUsecase>(
           create: (context) => LoginUsecase(context.read<AuthRepository>()),
         ),
 
-        // ini local database
+        RepositoryProvider<RegisterUsecase>(
+          create: (context) => RegisterUsecase(context.read<AuthRepository>()),
+        ),
+
         RepositoryProvider<AppDatabase>(create: (context) => AppDatabase()),
         RepositoryProvider<NoteLocalDataSource>(
           create: (context) =>

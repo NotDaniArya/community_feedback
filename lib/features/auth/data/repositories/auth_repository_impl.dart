@@ -6,29 +6,33 @@ import 'package:dartz/dartz.dart';
 
 class AuthRepositoryImpl extends AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
-  // final AuthLocalDataSource localDataSource;
 
   AuthRepositoryImpl(this.remoteDataSource);
 
-  // @override
-  // Future<(void, Failure?)> register({
-  //   required String name,
-  //   required String email,
-  //   required String password,
-  //   required String passwordConfirm,
-  // }) async {
-  //   try {
-  //     await remoteDataSource.register(
-  //       name: name,
-  //       email: email,
-  //       password: password,
-  //       passwordConfirm: passwordConfirm,
-  //     );
-  //     return (null, null);
-  //   } catch (e) {
-  //     return (null, Failure('Register gagal: ${e.toString()}'));
-  //   }
-  // }
+  @override
+  Future<Either<Failure, void>> register({
+    required String name,
+    required String email,
+    required String password,
+    required String passwordConfirmation,
+  }) async {
+    try {
+      await remoteDataSource.register(
+        name: name,
+        email: email,
+        password: password,
+        passwordConfirm: passwordConfirmation,
+      );
+
+      return const Right(null);
+    } on Failure catch (f) {
+      return Left(f);
+    } catch (e) {
+      return Left(
+        ServerFailure(message: 'Terjadi kesalahan tidak terduga: $e'),
+      );
+    }
+  }
 
   @override
   Future<Either<Failure, AuthEntity>> login({

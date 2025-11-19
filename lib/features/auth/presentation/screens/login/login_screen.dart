@@ -74,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
               MyHelperFunction.showToast(
                 context,
                 'Login Gagal!',
-                'Perhatikan kembali email dan password yang anda masukkan',
+                state.message,
                 ToastificationType.error,
               );
             }

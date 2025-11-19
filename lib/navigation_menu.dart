@@ -4,9 +4,7 @@ import 'package:community_feedback/features/top%20likes%20and%20newest/presentat
 import 'package:community_feedback/utils/constant/colors.dart';
 import 'package:community_feedback/utils/constant/sizes.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import 'features/notes/presentation/screens/widgets/add_note.dart';
 
 class NavigationMenu extends StatefulWidget {
   const NavigationMenu({super.key});

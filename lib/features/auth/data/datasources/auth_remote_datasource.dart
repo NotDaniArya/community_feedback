@@ -1,16 +1,15 @@
 import 'package:community_feedback/core/error/failures.dart';
 import 'package:community_feedback/features/auth/data/models/auth_model.dart';
 import 'package:community_feedback/utils/constant/secrets.dart';
-import 'package:community_feedback/utils/constant/texts.dart';
 import 'package:dio/dio.dart';
 
 abstract class AuthRemoteDataSource {
-  // Future<void> register({
-  //   required String name,
-  //   required String email,
-  //   required String password,
-  //   required String passwordConfirm,
-  // });
+  Future<void> register({
+    required String name,
+    required String email,
+    required String password,
+    required String passwordConfirm,
+  });
 
   Future<AuthModel> login({
     required String email,
@@ -25,6 +24,36 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   const AuthRemoteDataSourceImpl(this.dio);
 
   @override
+  Future<void> register({
+    required String name,
+    required String email,
+    required String password,
+    required String passwordConfirm,
+  }) async {
+    try {
+      await dio.post(
+        '${TSecrets.baseUrl}/api/register',
+        data: {
+          "name": name,
+          "email": email,
+          "password": password,
+          "password_confirmation": passwordConfirm,
+        },
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+          },
+        ),
+      );
+    } on DioException catch (e) {
+      throw Failure.fromDioException(e);
+    } catch (e) {
+      throw ServerFailure(message: e.toString());
+    }
+  }
+
+  @override
   Future<AuthModel> login({
     required String email,
     required String password,
@@ -34,6 +63,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final response = await dio.post(
         '${TSecrets.baseUrl}/api/login',
         data: {'email': email, 'password': password, 'remember_me': rememberMe},
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+          },
+        ),
       );
 
       if (response.statusCode == 200) {
