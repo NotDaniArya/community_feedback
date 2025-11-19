@@ -10,6 +10,10 @@ abstract class AuthLocalDataSource {
 
   Future<String?> getUserToken();
 
+  Future<String?> getUserName();
+  
+  Future<String?> getUserEmail();
+
   Future<void> deleteCurrentUserData();
 }
 
@@ -34,11 +38,21 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
     await sharedPreferences.setString('user_email', email);
     await secureStorage.write(key: 'user_token', value: token);
   }
-  
+
   @override
   Future<void> deleteCurrentUserData() async {
     await sharedPreferences.remove('user_name');
     await sharedPreferences.remove('user_email');
     await secureStorage.delete(key: 'user_token');
+  }
+  
+  @override
+  Future<String?> getUserEmail() async {
+    return sharedPreferences.getString('user_email');
+  }
+  
+  @override
+  Future<String?> getUserName() async {
+    return sharedPreferences.getString('user_name');
   }
 }
