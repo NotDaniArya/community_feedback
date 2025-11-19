@@ -6,6 +6,7 @@ import 'package:community_feedback/utils/shared_widgets/button_radius_eight.dart
 import 'package:community_feedback/utils/shared_widgets/profile_image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});

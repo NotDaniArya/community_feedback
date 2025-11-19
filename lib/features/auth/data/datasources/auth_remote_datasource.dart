@@ -39,12 +39,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           "password": password,
           "password_confirmation": passwordConfirm,
         },
-        options: Options(
-          headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-          },
-        ),
       );
     } on DioException catch (e) {
       throw Failure.fromDioException(e);
@@ -63,16 +57,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final response = await dio.post(
         '${TSecrets.baseUrl}/api/login',
         data: {'email': email, 'password': password, 'remember_me': rememberMe},
-        options: Options(
-          headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-          },
-        ),
       );
 
       if (response.statusCode == 200) {
-        print(response.data);
+        
         return AuthModel.fromJson(response.data);
       } else {
         throw Failure.fromDioException(
