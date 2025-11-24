@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:community_feedback/core/networking/auth_interceptor.dart';
 import 'package:community_feedback/features/auth/data/datasources/auth_local_datasource.dart';
 import 'package:community_feedback/features/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:community_feedback/features/auth/data/repositories/auth_repository_impl.dart';
@@ -10,6 +11,12 @@ import 'package:community_feedback/features/notes/data/datasources/note_local_da
 import 'package:community_feedback/features/notes/data/repositories/note_repository_impl.dart';
 import 'package:community_feedback/features/notes/domain/repositories/note_repository.dart';
 import 'package:community_feedback/features/notes/presentation/cubit/notes_cubit.dart';
+import 'package:community_feedback/features/profile/data/datasources/profile_remote_datasource.dart';
+import 'package:community_feedback/features/profile/data/repositories/profile_repository_impl.dart';
+import 'package:community_feedback/features/profile/domain/repositories/profile_repository.dart';
+import 'package:community_feedback/features/profile/domain/usecases/change_email_usecase.dart';
+import 'package:community_feedback/features/profile/domain/usecases/change_name_usecase.dart';
+import 'package:community_feedback/features/profile/domain/usecases/change_password_usecase.dart';
 import 'package:community_feedback/splash_screen.dart';
 import 'package:community_feedback/utils/constant/colors.dart';
 import 'package:dio/dio.dart';
@@ -47,6 +54,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
+        RepositoryProvider<AuthLocalDataSource>(
+          create: (context) => AuthLocalDataSourceImpl(
+            sharedPreferences,
+            const FlutterSecureStorage(),
+          ),
+        ),
+
         RepositoryProvider<Dio>(
           create: (context) {
             final options = BaseOptions(
@@ -65,24 +79,32 @@ class MyApp extends StatelessWidget {
               LogInterceptor(requestBody: true, responseBody: true),
             );
 
+            dio.interceptors.add(
+              AuthInterceptor(context.read<AuthLocalDataSource>()),
+            );
+            
             return dio;
           },
-        ),
-
-        RepositoryProvider<AuthLocalDataSource>(
-          create: (context) => AuthLocalDataSourceImpl(
-            sharedPreferences,
-            const FlutterSecureStorage(),
-          ),
         ),
 
         RepositoryProvider<AuthRemoteDataSource>(
           create: (context) => AuthRemoteDataSourceImpl(context.read<Dio>()),
         ),
 
+        RepositoryProvider<ProfileRemoteDataSource>(
+          create: (context) => ProfileRemoteDataSourceImpl(context.read<Dio>()),
+        ),
+
         RepositoryProvider<AuthRepository>(
           create: (context) => AuthRepositoryImpl(
             context.read<AuthRemoteDataSource>(),
+            context.read<AuthLocalDataSource>(),
+          ),
+        ),
+
+        RepositoryProvider<ProfileRepository>(
+          create: (context) => ProfileRepositoryImpl(
+            context.read<ProfileRemoteDataSource>(),
             context.read<AuthLocalDataSource>(),
           ),
         ),
@@ -93,6 +115,21 @@ class MyApp extends StatelessWidget {
 
         RepositoryProvider<RegisterUsecase>(
           create: (context) => RegisterUsecase(context.read<AuthRepository>()),
+        ),
+
+        RepositoryProvider<ChangePasswordUsecase>(
+          create: (context) =>
+              ChangePasswordUsecase(context.read<ProfileRepository>()),
+        ),
+
+        RepositoryProvider<ChangeEmailUseCase>(
+          create: (context) =>
+              ChangeEmailUseCase(context.read<ProfileRepository>()),
+        ),
+
+        RepositoryProvider<ChangeNameUseCase>(
+          create: (context) =>
+              ChangeNameUseCase(context.read<ProfileRepository>()),
         ),
 
         RepositoryProvider<AppDatabase>(create: (context) => AppDatabase()),

@@ -8,6 +8,10 @@ abstract class AuthLocalDataSource {
     required String email,
   });
 
+  Future<void> updateUserName({required String name});
+
+  Future<void> updateUserEmail({required String email});
+
   Future<String?> getUserToken();
 
   Future<String?> getUserName();
@@ -37,6 +41,16 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
     await sharedPreferences.setString('user_name', name);
     await sharedPreferences.setString('user_email', email);
     await secureStorage.write(key: 'user_token', value: token);
+  }
+  
+  @override
+  Future<void> updateUserEmail({required String email}) async {
+    await sharedPreferences.setString('user_email', email);
+  }
+
+  @override
+  Future<void> updateUserName({required String name}) async {
+    await sharedPreferences.setString('user_name', name);
   }
 
   @override

@@ -20,6 +20,8 @@ class ProfileLoaded extends ProfileState {
   List<Object?> get props => [name, email];
 }
 
+class ProfileSuccess extends ProfileState {}
+
 class ProfileError extends ProfileState {
   final String message;
   const ProfileError(this.message);

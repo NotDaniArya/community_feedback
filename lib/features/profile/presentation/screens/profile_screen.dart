@@ -1,16 +1,20 @@
 import 'package:community_feedback/features/auth/data/datasources/auth_local_datasource.dart';
 import 'package:community_feedback/features/our%20developer/presentation/our_developer_screen.dart';
+import 'package:community_feedback/features/profile/domain/usecases/change_email_usecase.dart';
+import 'package:community_feedback/features/profile/domain/usecases/change_name_usecase.dart';
+import 'package:community_feedback/features/profile/domain/usecases/change_password_usecase.dart';
+import 'package:community_feedback/features/profile/presentation/screens/change_password.dart';
 import 'package:community_feedback/features/profile/presentation/screens/cubit/profile_cubit.dart';
 import 'package:community_feedback/features/profile/presentation/screens/cubit/profile_state.dart';
 import 'package:community_feedback/features/profile/presentation/screens/widgets/personal_container.dart';
 import 'package:community_feedback/utils/constant/colors.dart';
 import 'package:community_feedback/utils/constant/sizes.dart';
+import 'package:community_feedback/utils/helper_functions/helper.dart';
 import 'package:community_feedback/utils/shared_widgets/button_radius_eight.dart';
 import 'package:community_feedback/utils/shared_widgets/profile_image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -20,8 +24,12 @@ class ProfileScreen extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return BlocProvider(
-      create: (context) =>
-          ProfileCubit(context.read<AuthLocalDataSource>())..loadUserProfile(),
+      create: (context) => ProfileCubit(
+        authLocalDataSource: context.read<AuthLocalDataSource>(),
+        changePasswordUseCase: context.read<ChangePasswordUsecase>(),
+        changeEmailUseCase: context.read<ChangeEmailUseCase>(),
+        changeNameUseCase: context.read<ChangeNameUseCase>(),
+      )..loadUserProfile(),
       child: Scaffold(
         backgroundColor: TColors.backgroundColor,
         body: SafeArea(
@@ -232,7 +240,20 @@ class ProfileScreen extends StatelessWidget {
                                         ),
                                       ),
                                     ],
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      final profileCubit = context
+                                          .read<ProfileCubit>();
+
+                                      MyHelperFunction.showModalBottom(
+                                        context: context,
+                                        screen: BlocProvider.value(
+                                          value: profileCubit,
+                                          child: ChangePassword(
+                                            textTheme: textTheme,
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ],
                               ),

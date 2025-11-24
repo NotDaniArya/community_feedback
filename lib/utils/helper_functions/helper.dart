@@ -27,4 +27,18 @@ class MyHelperFunction {
           : const Icon(Icons.error),
     );
   }
+
+  static void showModalBottom({
+    required BuildContext context,
+    required Widget screen,
+  }) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadiusGeometry.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => screen,
+    );
+  }
 }
