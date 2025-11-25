@@ -66,4 +66,17 @@ class ProfileRepositoryImpl extends ProfileRepository {
       );
     }
   }
+  
+  @override
+  Future<Either<Failure, void>> logout() async {
+    try {
+      await remoteDataSource.logout();
+
+      await authLocalDataSource.deleteCurrentUserData();
+
+      return const Right(null);
+    } on Failure catch (f) {
+      return Left(f);
+    }
+  }
 }

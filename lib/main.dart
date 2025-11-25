@@ -17,6 +17,7 @@ import 'package:community_feedback/features/profile/domain/repositories/profile_
 import 'package:community_feedback/features/profile/domain/usecases/change_email_usecase.dart';
 import 'package:community_feedback/features/profile/domain/usecases/change_name_usecase.dart';
 import 'package:community_feedback/features/profile/domain/usecases/change_password_usecase.dart';
+import 'package:community_feedback/features/profile/domain/usecases/logout_usecase.dart';
 import 'package:community_feedback/splash_screen.dart';
 import 'package:community_feedback/utils/constant/colors.dart';
 import 'package:dio/dio.dart';
@@ -82,7 +83,7 @@ class MyApp extends StatelessWidget {
             dio.interceptors.add(
               AuthInterceptor(context.read<AuthLocalDataSource>()),
             );
-            
+
             return dio;
           },
         ),
@@ -130,6 +131,10 @@ class MyApp extends StatelessWidget {
         RepositoryProvider<ChangeNameUseCase>(
           create: (context) =>
               ChangeNameUseCase(context.read<ProfileRepository>()),
+        ),
+
+        RepositoryProvider<LogoutUsecase>(
+          create: (context) => LogoutUsecase(context.read<ProfileRepository>()),
         ),
 
         RepositoryProvider<AppDatabase>(create: (context) => AppDatabase()),

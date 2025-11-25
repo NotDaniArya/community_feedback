@@ -1,8 +1,10 @@
 import 'package:community_feedback/features/auth/data/datasources/auth_local_datasource.dart';
+import 'package:community_feedback/features/auth/presentation/screens/login/login_screen.dart';
 import 'package:community_feedback/features/our%20developer/presentation/our_developer_screen.dart';
 import 'package:community_feedback/features/profile/domain/usecases/change_email_usecase.dart';
 import 'package:community_feedback/features/profile/domain/usecases/change_name_usecase.dart';
 import 'package:community_feedback/features/profile/domain/usecases/change_password_usecase.dart';
+import 'package:community_feedback/features/profile/domain/usecases/logout_usecase.dart';
 import 'package:community_feedback/features/profile/presentation/screens/cubit/profile_cubit.dart';
 import 'package:community_feedback/features/profile/presentation/screens/cubit/profile_state.dart';
 import 'package:community_feedback/features/profile/presentation/screens/widgets/change_email_sheet.dart';
@@ -21,6 +23,49 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
+  void _showLogoutDialog(BuildContext context) {
+    final profileCubit = context.read<ProfileCubit>();
+
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
+        title: const Text(
+          'Logout?',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: const Text(
+          'Are you sure you want to log out of the application?',
+        ),
+        actions: [
+          // Tombol Batal
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(dialogContext);
+
+              profileCubit.logout();
+
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginScreen()),
+                (route) => false,
+              );
+            },
+            child: const Text(
+              'Yes',
+              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -31,6 +76,7 @@ class ProfileScreen extends StatelessWidget {
         changePasswordUseCase: context.read<ChangePasswordUsecase>(),
         changeEmailUseCase: context.read<ChangeEmailUseCase>(),
         changeNameUseCase: context.read<ChangeNameUseCase>(),
+        logoutUseCase: context.read<LogoutUsecase>(),
       )..loadUserProfile(),
       child: Scaffold(
         backgroundColor: TColors.backgroundColor,
@@ -240,22 +286,11 @@ class ProfileScreen extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        'Password',
-                                        style: textTheme.titleMedium!.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      Text(
-                                        'Last modified 30 days ago',
-                                        style: textTheme.labelMedium,
-                                      ),
-                                    ],
+                                  Text(
+                                    'Password',
+                                    style: textTheme.titleMedium!.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                   ButtonRadiusEight(
                                     textTheme,
@@ -394,7 +429,9 @@ class ProfileScreen extends StatelessWidget {
                                   ),
                                 ),
                               ],
-                              onPressed: () {},
+                              onPressed: () {
+                                _showLogoutDialog(context);
+                              },
                             ),
                           ),
                         )

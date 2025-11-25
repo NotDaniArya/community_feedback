@@ -13,6 +13,8 @@ abstract class ProfileRemoteDataSource {
   Future<void> changeEmail({required String newEmail});
 
   Future<void> changeName({required String newName});
+
+  Future<void> logout();
 }
 
 class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
@@ -37,10 +39,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   @override
   Future<void> changeName({required String newName}) async {
     try {
-      await dio.put(
-        '${TSecrets.baseUrl}/api/profile',
-        data: {"name": newName},
-      );
+      await dio.put('${TSecrets.baseUrl}/api/profile', data: {"name": newName});
     } on DioException catch (e) {
       throw Failure.fromDioException(e);
     } catch (e) {
@@ -62,8 +61,18 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
           "password": password,
           "password_confirmation": passwordConfirmation,
         },
-        
       );
+    } on DioException catch (e) {
+      throw Failure.fromDioException(e);
+    } catch (e) {
+      throw ServerFailure(message: e.toString());
+    }
+  }
+
+  @override
+  Future<void> logout() async {
+    try {
+      await dio.post('${TSecrets.baseUrl}/api/logout');
     } on DioException catch (e) {
       throw Failure.fromDioException(e);
     } catch (e) {

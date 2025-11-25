@@ -2,6 +2,7 @@ import 'package:community_feedback/features/auth/data/datasources/auth_local_dat
 import 'package:community_feedback/features/profile/domain/usecases/change_email_usecase.dart';
 import 'package:community_feedback/features/profile/domain/usecases/change_name_usecase.dart';
 import 'package:community_feedback/features/profile/domain/usecases/change_password_usecase.dart';
+import 'package:community_feedback/features/profile/domain/usecases/logout_usecase.dart';
 import 'package:community_feedback/features/profile/presentation/screens/cubit/profile_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,15 +11,18 @@ class ProfileCubit extends Cubit<ProfileState> {
   final ChangePasswordUsecase _changePasswordUsecase;
   final ChangeEmailUseCase _changeEmailUseCase;
   final ChangeNameUseCase _changeNameUseCase;
+  final LogoutUsecase _logoutUsecase;
 
   ProfileCubit({
     required this.authLocalDataSource,
     required ChangePasswordUsecase changePasswordUseCase,
     required ChangeEmailUseCase changeEmailUseCase,
     required ChangeNameUseCase changeNameUseCase,
+    required LogoutUsecase logoutUseCase,
   }) : _changePasswordUsecase = changePasswordUseCase,
        _changeEmailUseCase = changeEmailUseCase,
        _changeNameUseCase = changeNameUseCase,
+       _logoutUsecase = logoutUseCase,
        super(ProfileInitial());
 
   Future<void> loadUserProfile() async {
@@ -93,6 +97,21 @@ class ProfileCubit extends Cubit<ProfileState> {
       },
       (success) {
         loadUserProfile();
+        emit(ProfileSuccess());
+      },
+    );
+  }
+
+  Future<void> logout() async {
+    emit(ProfileLoading());
+    
+    final result = await _logoutUsecase();
+
+    result.fold(
+      (failure) {
+        emit(ProfileError(failure.message));
+      },
+      (success) {
         emit(ProfileSuccess());
       },
     );

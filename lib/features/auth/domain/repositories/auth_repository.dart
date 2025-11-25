@@ -15,6 +15,4 @@ abstract class AuthRepository {
     required String password,
     required bool rememberMe,
   });
-
-  // Future<(Auth?, Failure?)> getCurrentUser();
 }

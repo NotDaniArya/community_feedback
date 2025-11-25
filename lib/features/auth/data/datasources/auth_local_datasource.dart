@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class AuthLocalDataSource {
   Future<void> saveCurrentUserData({
+    required int id,
     required String token,
     required String name,
     required String email,
@@ -15,8 +16,10 @@ abstract class AuthLocalDataSource {
   Future<String?> getUserToken();
 
   Future<String?> getUserName();
-  
+
   Future<String?> getUserEmail();
+
+  Future<int?> getUserId();
 
   Future<void> deleteCurrentUserData();
 }
@@ -34,15 +37,17 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
 
   @override
   Future<void> saveCurrentUserData({
+    required int id,
     required String token,
     required String name,
     required String email,
   }) async {
+    await sharedPreferences.setInt('user_id', id);
     await sharedPreferences.setString('user_name', name);
     await sharedPreferences.setString('user_email', email);
     await secureStorage.write(key: 'user_token', value: token);
   }
-  
+
   @override
   Future<void> updateUserEmail({required String email}) async {
     await sharedPreferences.setString('user_email', email);
@@ -55,16 +60,22 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
 
   @override
   Future<void> deleteCurrentUserData() async {
+    await sharedPreferences.remove('user_id');
     await sharedPreferences.remove('user_name');
     await sharedPreferences.remove('user_email');
     await secureStorage.delete(key: 'user_token');
   }
-  
+
+  @override
+  Future<int?> getUserId() async {
+    return sharedPreferences.getInt('user_id');
+  }
+
   @override
   Future<String?> getUserEmail() async {
     return sharedPreferences.getString('user_email');
   }
-  
+
   @override
   Future<String?> getUserName() async {
     return sharedPreferences.getString('user_name');

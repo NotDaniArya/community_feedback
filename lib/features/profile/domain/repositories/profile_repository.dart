@@ -15,4 +15,6 @@ abstract class ProfileRepository {
   Future<Either<Failure, void>> changeName({
     required String newName
   });
+
+  Future<Either<Failure, void>> logout();
 }

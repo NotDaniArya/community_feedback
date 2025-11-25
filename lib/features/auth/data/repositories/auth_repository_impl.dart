@@ -4,7 +4,6 @@ import 'package:community_feedback/features/auth/data/datasources/auth_remote_da
 import 'package:community_feedback/features/auth/domain/entities/auth_entity.dart';
 import 'package:community_feedback/features/auth/domain/repositories/auth_repository.dart';
 import 'package:dartz/dartz.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthRepositoryImpl extends AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
@@ -43,8 +42,6 @@ class AuthRepositoryImpl extends AuthRepository {
     required String password,
     required bool rememberMe,
   }) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-
     try {
       final authModel = await remoteDataSource.login(
         email: email,
@@ -53,10 +50,12 @@ class AuthRepositoryImpl extends AuthRepository {
       );
 
       await authLocalDatasource.saveCurrentUserData(
+        id: authModel.id,
         token: authModel.token,
         name: authModel.name,
         email: authModel.email,
       );
+
       return Right(authModel);
     } on Failure catch (f) {
       return Left(f);
