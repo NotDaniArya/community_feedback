@@ -3,9 +3,11 @@ import 'package:community_feedback/features/our%20developer/presentation/our_dev
 import 'package:community_feedback/features/profile/domain/usecases/change_email_usecase.dart';
 import 'package:community_feedback/features/profile/domain/usecases/change_name_usecase.dart';
 import 'package:community_feedback/features/profile/domain/usecases/change_password_usecase.dart';
-import 'package:community_feedback/features/profile/presentation/screens/change_password.dart';
 import 'package:community_feedback/features/profile/presentation/screens/cubit/profile_cubit.dart';
 import 'package:community_feedback/features/profile/presentation/screens/cubit/profile_state.dart';
+import 'package:community_feedback/features/profile/presentation/screens/widgets/change_email_sheet.dart';
+import 'package:community_feedback/features/profile/presentation/screens/widgets/change_name_sheet.dart';
+import 'package:community_feedback/features/profile/presentation/screens/widgets/change_password_sheet.dart';
 import 'package:community_feedback/features/profile/presentation/screens/widgets/personal_container.dart';
 import 'package:community_feedback/utils/constant/colors.dart';
 import 'package:community_feedback/utils/constant/sizes.dart';
@@ -44,8 +46,8 @@ class ProfileScreen extends StatelessWidget {
                   displayName = state.name;
                   displayEmail = state.email;
                 } else {
-                  displayName = 'User';
-                  displayEmail = '-';
+                  displayName;
+                  displayEmail;
                 }
 
                 return Column(
@@ -152,6 +154,20 @@ class ProfileScreen extends StatelessWidget {
                               PersonalContainer(
                                 textTheme: textTheme,
                                 content: displayName,
+                                onPressed: () {
+                                  final profileCubit = context
+                                      .read<ProfileCubit>();
+
+                                  MyHelperFunction.showModalBottom(
+                                    context: context,
+                                    screen: BlocProvider.value(
+                                      value: profileCubit,
+                                      child: ChangeNameSheet(
+                                        textTheme: textTheme,
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
                               const SizedBox(height: TSizes.spaceBtwItems),
                               Align(
@@ -167,6 +183,20 @@ class ProfileScreen extends StatelessWidget {
                               PersonalContainer(
                                 textTheme: textTheme,
                                 content: displayEmail,
+                                onPressed: () {
+                                  final profileCubit = context
+                                      .read<ProfileCubit>();
+
+                                  MyHelperFunction.showModalBottom(
+                                    context: context,
+                                    screen: BlocProvider.value(
+                                      value: profileCubit,
+                                      child: ChangeEmailSheet(
+                                        textTheme: textTheme,
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
                             ],
                           ),
@@ -248,7 +278,7 @@ class ProfileScreen extends StatelessWidget {
                                         context: context,
                                         screen: BlocProvider.value(
                                           value: profileCubit,
-                                          child: ChangePassword(
+                                          child: ChangePasswordSheet(
                                             textTheme: textTheme,
                                           ),
                                         ),

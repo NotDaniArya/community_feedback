@@ -8,10 +8,12 @@ class PersonalContainer extends StatelessWidget {
     super.key,
     required this.textTheme,
     required this.content,
+    required this.onPressed
   });
 
   final TextTheme textTheme;
   final String content;
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +39,7 @@ class PersonalContainer extends StatelessWidget {
           ),
           const SizedBox(width: TSizes.spaceBtwSections),
           IconButton(
-            onPressed: () {},
+            onPressed: onPressed,
             icon: Row(
               children: [
                 const FaIcon(

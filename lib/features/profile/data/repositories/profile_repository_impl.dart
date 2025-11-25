@@ -32,6 +32,8 @@ class ProfileRepositoryImpl extends ProfileRepository {
     try {
       await remoteDataSource.changeName(newName: newName);
 
+      await authLocalDataSource.updateUserName(name: newName);
+
       return const Right(null);
     } on Failure catch (f) {
       return Left(f);

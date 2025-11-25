@@ -8,16 +8,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:toastification/toastification.dart';
 
-class ChangePassword extends StatefulWidget {
-  const ChangePassword({super.key, required this.textTheme});
+class ChangePasswordSheet extends StatefulWidget {
+  const ChangePasswordSheet({super.key, required this.textTheme});
 
   final TextTheme textTheme;
 
   @override
-  State<ChangePassword> createState() => _ChangePasswordState();
+  State<ChangePasswordSheet> createState() => _ChangePasswordSheetState();
 }
 
-class _ChangePasswordState extends State<ChangePassword> {
+class _ChangePasswordSheetState extends State<ChangePasswordSheet> {
   final _form = GlobalKey<FormState>();
   final _currentPasswordController = TextEditingController();
   final _newPasswordController = TextEditingController();
@@ -134,7 +134,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                   ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Your current password cannot be blank.';
+                      return 'Please enter your password';
                     }
                     return null;
                   },
