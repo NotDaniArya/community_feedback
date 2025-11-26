@@ -17,9 +17,13 @@ abstract class AuthLocalDataSource {
 
   Future<String?> getUserName();
 
+  Future<void> updateIsLogin({required bool isLogin});
+
   Future<String?> getUserEmail();
 
   Future<int?> getUserId();
+
+  Future<bool?> isUserLogin();
 
   Future<void> deleteCurrentUserData();
 }
@@ -46,6 +50,7 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
     await sharedPreferences.setString('user_name', name);
     await sharedPreferences.setString('user_email', email);
     await secureStorage.write(key: 'user_token', value: token);
+    await sharedPreferences.setBool('is_login', true);
   }
 
   @override
@@ -59,11 +64,17 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   }
 
   @override
+  Future<void> updateIsLogin({required bool isLogin}) async {
+    await sharedPreferences.setBool('is_login', isLogin);
+  }
+
+  @override
   Future<void> deleteCurrentUserData() async {
     await sharedPreferences.remove('user_id');
     await sharedPreferences.remove('user_name');
     await sharedPreferences.remove('user_email');
     await secureStorage.delete(key: 'user_token');
+    await sharedPreferences.setBool('is_login', false);
   }
 
   @override
@@ -79,5 +90,10 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   @override
   Future<String?> getUserName() async {
     return sharedPreferences.getString('user_name');
+  }
+
+  @override
+  Future<bool?> isUserLogin() async {
+    return sharedPreferences.getBool('is_login');
   }
 }

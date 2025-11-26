@@ -5,6 +5,7 @@ import 'package:community_feedback/utils/constant/navigator_key.dart';
 import 'package:community_feedback/utils/helper_functions/helper.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toastification/toastification.dart';
 
 class AuthInterceptor extends Interceptor {
@@ -53,6 +54,8 @@ class AuthInterceptor extends Interceptor {
           MaterialPageRoute(builder: (context) => const LoginScreen()),
           (route) => false,
         );
+
+        await authLocalDataSource.updateIsLogin(isLogin: false);
 
         MyHelperFunction.showToast(
           context,

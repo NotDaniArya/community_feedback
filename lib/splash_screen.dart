@@ -1,8 +1,11 @@
+import 'package:community_feedback/features/auth/data/datasources/auth_local_datasource.dart';
 import 'package:community_feedback/features/auth/presentation/screens/login/login_screen.dart';
+import 'package:community_feedback/navigation_menu.dart';
 import 'package:community_feedback/utils/constant/colors.dart';
 import 'package:community_feedback/utils/constant/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -16,14 +19,37 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // Navigate to home after 7 seconds
-    Future.delayed(const Duration(seconds: 7), () {
+    _checkLoginAndNavigate();
+  }
+
+  Future<void> _checkLoginAndNavigate() async {
+    await Future.delayed(const Duration(seconds: 3));
+
+    if (!mounted) return;
+
+    try {
+      final authLocalDataSource = context.read<AuthLocalDataSource>();
+
+      final isLogin = await authLocalDataSource.isUserLogin();
+
+      if (!mounted) return;
+
+      if (isLogin == true) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const NavigationMenu()),
+        );
+      } else {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const LoginScreen()),
+        );
+      }
+    } catch (e) {
       if (mounted) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => const LoginScreen()),
         );
       }
-    });
+    }
   }
 
   @override
