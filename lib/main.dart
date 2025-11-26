@@ -18,8 +18,10 @@ import 'package:community_feedback/features/profile/domain/usecases/change_email
 import 'package:community_feedback/features/profile/domain/usecases/change_name_usecase.dart';
 import 'package:community_feedback/features/profile/domain/usecases/change_password_usecase.dart';
 import 'package:community_feedback/features/profile/domain/usecases/logout_usecase.dart';
+import 'package:community_feedback/features/profile/presentation/screens/cubit/profile_cubit.dart';
 import 'package:community_feedback/splash_screen.dart';
 import 'package:community_feedback/utils/constant/colors.dart';
+import 'package:community_feedback/utils/constant/navigator_key.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -157,6 +159,7 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           title: 'Community Feedback',
           theme: theme,
+          navigatorKey: navigatorKey,
           home: const SplashScreen(),
         ),
       ),
