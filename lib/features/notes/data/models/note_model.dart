@@ -10,6 +10,7 @@ class NoteModel extends NoteEntity {
     required super.color,
     required super.reaction,
     required super.userId,
+    required super.userName,
     required super.createdAt,
   });
 
@@ -37,6 +38,9 @@ class NoteModel extends NoteEntity {
       userId: (json['user'] != null && json['user'] is Map)
           ? (json['user']['id'] as int? ?? 0)
           : 0,
+      userName: (json['user'] != null && json['user'] is Map)
+          ? (json['user']['name'] as String)
+          : (json['guest']['email'] as String),
       createdAt: formattedDate,
     );
   }

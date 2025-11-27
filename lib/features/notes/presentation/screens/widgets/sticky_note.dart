@@ -55,7 +55,7 @@ class StickyNote extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'Muhammad Dani Arya Putra',
+                    note.userName,
                     style: textTheme.labelMedium!.copyWith(
                       color: TColors.secondaryText,
                     ),

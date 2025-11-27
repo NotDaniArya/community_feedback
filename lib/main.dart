@@ -154,17 +154,6 @@ class MyApp extends StatelessWidget {
           create: (context) =>
               GetListNotesUsecase(context.read<NoteRepository>()),
         ),
-
-        // RepositoryProvider<AppDatabase>(create: (context) => AppDatabase()),
-        // RepositoryProvider<NoteLocalDataSource>(
-        //   create: (context) =>
-        //       NoteLocalDataSourceImpl(database: context.read<AppDatabase>()),
-        // ),
-        // RepositoryProvider<NoteRepository>(
-        //   create: (context) => NoteRepositoryImpl(
-        //     localDataSource: context.read<NoteLocalDataSource>(),
-        //   ),
-        // ),
       ],
       child: MultiBlocProvider(
         providers: [

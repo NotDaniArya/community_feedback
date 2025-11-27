@@ -9,6 +9,7 @@ class NoteEntity extends Equatable {
   final String color;
   final Reactions reaction;
   final int userId;
+  final String userName;
   final String createdAt;
 
   const NoteEntity({
@@ -19,6 +20,7 @@ class NoteEntity extends Equatable {
     required this.color,
     required this.reaction,
     required this.userId,
+    required this.userName,
     required this.createdAt,
   });
 
@@ -32,6 +34,7 @@ class NoteEntity extends Equatable {
     color,
     reaction,
     userId,
+    userName,
     createdAt,
   ];
 }
