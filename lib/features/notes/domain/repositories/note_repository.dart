@@ -5,11 +5,11 @@ import 'package:community_feedback/features/notes/domain/entities/note_entity.da
 import 'package:dartz/dartz.dart';
 
 abstract class NoteRepository {
-  Stream<Either<Failure, List<NoteEntity>>> watchAllNotes();
+  Future<Either<Failure, List<NoteEntity>>> getListNotes();
 
-  Future<Either<Failure, void>> addNote(NoteEntity note);
+  // Future<Either<Failure, void>> addNote(NoteEntity note);
 
-  Future<Either<Failure, void>> deleteNote(int id);
+  // Future<Either<Failure, void>> deleteNote(int id);
 
-  Future<Either<Failure, void>> updateNotePosition(int id, Offset newPosition);
+  // Future<Either<Failure, void>> updateNotePosition(int id, Offset newPosition);
 }

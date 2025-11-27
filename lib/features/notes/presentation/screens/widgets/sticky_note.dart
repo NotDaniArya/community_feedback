@@ -11,9 +11,24 @@ class StickyNote extends StatelessWidget {
 
   const StickyNote({super.key, required this.note});
 
+  Color _parseColor(String colorString) {
+    try {
+      String hex = colorString.replaceAll('#', '');
+
+      if (hex.length == 6) {
+        hex = 'FF$hex';
+      }
+
+      return Color(int.parse('0x$hex'));
+    } catch (e) {
+      return Colors.white;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final noteColor = _parseColor(note.color);
 
     return Container(
       width: 320,
@@ -21,7 +36,7 @@ class StickyNote extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(12.0),
         decoration: BoxDecoration(
-          color: note.color,
+          color: noteColor,
           borderRadius: BorderRadius.circular(8),
           boxShadow: const [
             BoxShadow(
@@ -40,7 +55,7 @@ class StickyNote extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    note.username,
+                    'Muhammad Dani Arya Putra',
                     style: textTheme.labelMedium!.copyWith(
                       color: TColors.secondaryText,
                     ),
@@ -51,7 +66,7 @@ class StickyNote extends StatelessWidget {
                 const SizedBox(width: TSizes.largeSpace),
 
                 Text(
-                  DateFormat('d/MM/yyyy').format(note.createdAt),
+                  note.createdAt,
                   style: textTheme.labelMedium!.copyWith(
                     color: TColors.secondaryText,
                   ),
@@ -67,20 +82,20 @@ class StickyNote extends StatelessWidget {
             ),
             const SizedBox(height: TSizes.mediumSpace),
             Text(
-              note.content,
+              note.description,
               style: textTheme.bodyMedium!.copyWith(
                 fontWeight: FontWeight.normal,
               ),
             ),
             const SizedBox(height: TSizes.mediumSpace),
-            const Row(
+             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ReactionChip(emoji: '❤️'),
-                ReactionChip(emoji: '👍'),
-                ReactionChip(emoji: '😂'),
-                ReactionChip(emoji: '😮'),
-                ReactionChip(emoji: '🔥'),
+                ReactionChip(emoji: '❤️', countEmoji: note.reaction.heart,),
+                ReactionChip(emoji: '👍', countEmoji: note.reaction.like,),
+                ReactionChip(emoji: '😂', countEmoji: note.reaction.laugh),
+                ReactionChip(emoji: '😮', countEmoji: note.reaction.surprised,),
+                ReactionChip(emoji: '🔥', countEmoji: note.reaction.fire,),
               ],
             ),
           ],

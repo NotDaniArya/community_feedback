@@ -8,6 +8,8 @@ abstract class NotesState extends Equatable {
   List<Object> get props => [];
 }
 
+class NotesInitial extends NotesState{}
+
 class NotesLoading extends NotesState {}
 
 class NotesLoaded extends NotesState {

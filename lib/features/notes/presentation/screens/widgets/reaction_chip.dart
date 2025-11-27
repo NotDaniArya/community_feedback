@@ -1,11 +1,17 @@
+import 'package:community_feedback/features/notes/domain/entities/note_entity.dart';
 import 'package:community_feedback/utils/constant/colors.dart';
 import 'package:community_feedback/utils/constant/sizes.dart';
 import 'package:flutter/material.dart';
 
 class ReactionChip extends StatelessWidget {
-  const ReactionChip({super.key, required this.emoji});
+  const ReactionChip({
+    super.key,
+    required this.emoji,
+    required this.countEmoji,
+  });
 
   final String emoji;
+  final int countEmoji;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +30,7 @@ class ReactionChip extends StatelessWidget {
         children: [
           Text(emoji, style: const TextStyle(fontSize: 12)),
           const SizedBox(width: TSizes.smallSpace / 2),
-          Text('100', style: textTheme.labelSmall),
+          Text(countEmoji.toString(), style: textTheme.labelSmall),
         ],
       ),
     );

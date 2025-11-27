@@ -170,11 +170,11 @@ class _TopLikesNewestScreenState extends State<TopLikesNewestScreen> {
                             const Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                ReactionChip(emoji: '❤️'),
-                                ReactionChip(emoji: '👍'),
-                                ReactionChip(emoji: '😂'),
-                                ReactionChip(emoji: '😮'),
-                                ReactionChip(emoji: '🔥'),
+                                ReactionChip(emoji: '❤️', countEmoji: 100),
+                                ReactionChip(emoji: '👍', countEmoji: 100),
+                                ReactionChip(emoji: '😂', countEmoji: 100),
+                                ReactionChip(emoji: '😮', countEmoji: 100),
+                                ReactionChip(emoji: '🔥', countEmoji: 100),
                               ],
                             ),
                           ],
